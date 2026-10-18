@@ -1,0 +1,11 @@
+import {build} from 'esbuild';
+import {mkdir,copyFile,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const outdir=path.join(root,'public','assets','editor');
+await mkdir(outdir,{recursive:true});
+await build({absWorkingDir:root,entryPoints:{editor:'editor/client.mjs','editor.worker':'node_modules/monaco-editor/esm/vs/editor/editor.worker.js'},outdir,bundle:true,format:'esm',target:'es2022',minify:true,legalComments:'linked',loader:{'.ttf':'file'},assetNames:'[name]-[hash]',logLevel:'warning'});
+await copyFile(path.join(root,'node_modules','monaco-editor','LICENSE'),path.join(outdir,'MONACO-LICENSE.txt'));
+await writeFile(path.join(outdir,'NOTICE.txt'),'Monaco Editor, copyright Microsoft Corporation and contributors, MIT license.\nOther bundled notices are preserved in *.LEGAL.txt.\n');
+console.log('Local editor assets built.');

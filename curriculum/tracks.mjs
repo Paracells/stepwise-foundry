@@ -1,0 +1,24 @@
+export const tracks=[
+  {id:'rust',title:'Rust',version:'Edition 2024',tagline:'From first principles to real systems',description:'Learn Rust by writing Rust. Start with Cargo, then build through ownership, concurrency, and systems programming.',runtime:'rust',sourceKeys:['book','cargo','reference','std','cli','rustc','rustdoc','errors','nomicon','embedded','embedonomicon','unstable','fls','godbolt']},
+  {id:'python',title:'Python',version:'3.15',tagline:'From your first script to a well-built package',description:'Learn Python 3.15 through real programs, clear comments, precise documentation, and a testable project workflow.',runtime:'python',sourceKeys:['python_docs','python_reference','python_library','python_packaging']},
+  {id:'pytorch',title:'PyTorch',version:'2.14 · CPU',tagline:'Understand the tensors behind the model',description:'Build from tensor shapes and gradients to training, evaluation, checkpoints, and a complete small model. Python fundamentals are recommended first.',runtime:'ml',sourceKeys:['torch_docs','torch_tutorials','torch_basics']},
+  {id:'huggingface',title:'Hugging Face',version:'Local-first ML',tagline:'From dataset to tokenizer, model, and adapter',description:'Learn the Hugging Face ecosystem with local datasets, trained tokenizers, tiny transformer architectures, and parameter-efficient adaptation. Python and PyTorch foundations are recommended.',runtime:'ml',sourceKeys:['hf_docs','hf_hub','hf_datasets','hf_tokenizers','hf_transformers','hf_peft','hf_accelerate','hf_safetensors','hf_diffusers']},
+];
+export const additionalSources={
+  python_docs:['Python 3.15 tutorial','https://docs.python.org/3.15/tutorial/'],
+  python_reference:['Python 3.15 language Reference','https://docs.python.org/3.15/reference/index.html'],
+  python_library:['Python 3.15 standard library','https://docs.python.org/3.15/library/index.html'],
+  python_packaging:['Python Packaging User Guide','https://packaging.python.org/en/latest/'],
+  torch_docs:['PyTorch 2.14 documentation','https://docs.pytorch.org/docs/2.14/index.html'],
+  torch_tutorials:['PyTorch tutorials','https://docs.pytorch.org/tutorials/index.html'],
+  torch_basics:['PyTorch: Learn the Basics','https://docs.pytorch.org/tutorials/beginner/basics/intro.html'],
+  hf_docs:['Hugging Face documentation map','https://huggingface.co/docs'],
+  hf_hub:['Hugging Face Hub client','https://huggingface.co/docs/huggingface_hub/index'],
+  hf_datasets:['Hugging Face Datasets','https://huggingface.co/docs/datasets/index'],
+  hf_tokenizers:['Hugging Face Tokenizers','https://huggingface.co/docs/tokenizers/index'],
+  hf_transformers:['Hugging Face Transformers','https://huggingface.co/docs/transformers/index'],
+  hf_peft:['Hugging Face PEFT','https://huggingface.co/docs/peft/index'],
+  hf_accelerate:['Hugging Face Accelerate','https://huggingface.co/docs/accelerate/index'],
+  hf_safetensors:['Safetensors','https://huggingface.co/docs/safetensors/index'],
+  hf_diffusers:['Hugging Face Diffusers','https://huggingface.co/docs/diffusers/index'],
+};

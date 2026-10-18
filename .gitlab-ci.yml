@@ -1,0 +1,14 @@
+image: node:22-bookworm
+
+stages:
+  - test
+
+core:
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends curl build-essential ca-certificates
+    - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --component rustfmt
+    - export PATH="$HOME/.cargo/bin:$PATH"
+    - npm ci
+  script:
+    - npm test

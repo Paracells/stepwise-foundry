@@ -1,0 +1,36 @@
+/* Portable dark code surfaces using system monospace fonts. */
+:root{--code-font:'Cascadia Code',Consolas,'Liberation Mono',monospace;--code-bg:#1e1e1e;--code-fg:#e6e6e6;--code-panel:#252526;--code-border:#4a4d54;--code-accent:#9cdcfe;--code-muted:#a8abb2}
+.workbench{background:var(--code-bg);color:var(--code-fg);border-color:var(--code-border)}
+.editor-toolbar{background:#2b2d31;color:#c9ccd1;font-size:10px}
+.editor-toolbar .status-dot{background:#b2cb93}
+.editor-tools button{color:#ddd2f7;font-size:10px}.editor-tools span{color:#a8abb2}
+.file-tabs{background:var(--code-panel);border-color:var(--code-border)}
+.file-tabs button{background:var(--code-panel);color:var(--code-muted);border-right-color:var(--code-border);border-bottom:0;border-top:2px solid transparent;font-family:var(--code-font);font-size:11px}
+.file-tabs button[aria-selected=true]{background:var(--code-bg);color:#fff;border-top-color:var(--code-accent);border-bottom:0}
+.file-tabs button:hover{background:#3a3c41}.file-tabs span{color:#a9c7fa}
+.editor-area{background:var(--code-bg);height:48vh;min-height:370px;max-height:620px}
+.monaco-host{position:absolute;inset:0;overflow:hidden}
+.code-input,#line-numbers{font:14px/1.5 var(--code-font);background:var(--code-bg)}
+.code-input{color:var(--code-fg);caret-color:var(--code-accent)}
+.code-input::selection{background:#9cdcfe3a}.code-input:focus-visible{box-shadow:inset 0 0 0 1px var(--code-accent)}
+#line-numbers{color:#8e9299}
+.editor-status{background:#2b2d31;color:#c9ccd1;border-color:var(--code-border);font-family:var(--code-font);gap:12px;flex-wrap:wrap;font-size:9px}
+#editor-theme-label{color:var(--code-accent)}
+.run-bar{background:var(--code-panel);border-color:var(--code-border)}
+.run-bar .secondary{border-color:#6a6e76;color:#e6e6e6}
+.run-bar .primary{background:var(--code-accent);border-color:var(--code-accent);color:#23202c}
+.run-bar .primary:hover{background:#ddd2f7}.keyboard-hint{color:var(--code-muted)}
+.terminal{background:var(--code-panel)}.terminal-heading{border-color:var(--code-border);color:#c9ccd1}
+.terminal pre{color:#e3e3e3;font:12px/1.6 var(--code-font);tab-size:4}
+.terminal pre::selection{background:#9cdcfe3a}.result-badge{color:#a8abb2}
+.result-badge.passed{color:#b2cb93}.result-badge.failed{color:#ff8f99}
+.solution-row{border-color:var(--code-border);color:var(--code-muted);background:var(--code-panel);font-size:10px}
+.solution-row button{color:#ddd2f7;font-size:10px}.execution-note{background:#2b2d31;color:#a8abb2;font-size:9px}
+.success-message{border-color:#5c704a;color:#cfe3b4}
+.checks-details pre,dialog pre{background:var(--code-bg);color:var(--code-fg);border:1px solid var(--code-border);font:13px/1.6 var(--code-font);tab-size:4;white-space:pre;overflow:auto}
+.syntax-code code{color:inherit;background:none;border:0;border-radius:0;padding:0;font:inherit}
+.reading code,.task-card code,.help-section code,.storage-note code{font-family:var(--code-font)}
+.workbench button:focus-visible,.workbench [tabindex]:focus-visible{outline-color:var(--code-accent)}
+@media(max-width:980px){.editor-area{height:430px;max-height:none}.workbench{border-color:var(--code-border)}}
+@media(max-width:700px){.editor-area{height:390px;min-height:330px}.editor-status{font-size:8px;gap:7px}.checks-details pre,dialog pre{font-size:12px}.editor-toolbar{flex-wrap:wrap}.terminal pre{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.monaco-editor .cursor{animation:none!important;transition:none!important}}

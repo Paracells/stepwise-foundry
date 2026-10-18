@@ -1,0 +1,33 @@
+{
+  "name": "stepwise-foundry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local programming practice with real runtimes, official references, and optional mentor review gates",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test tests/workshop.test.mjs tests/api.test.mjs tests/mentoring.test.mjs tests/beginner-values.test.mjs",
+    "verify:curriculum": "node scripts/verify-curriculum.mjs",
+    "build:editor": "node scripts/build-editor.mjs",
+    "prestart": "npm run build:editor",
+    "predev": "npm run build:editor",
+    "pretest": "npm run build:editor",
+    "test:core": "node --test tests/workshop.test.mjs tests/api.test.mjs tests/mentoring.test.mjs tests/beginner-values.test.mjs",
+    "test:python": "node --test tests/python.test.mjs",
+    "test:all": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "monaco-editor": "0.57.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "overrides": {
+    "dompurify": "3.4.17"
+  }
+}
