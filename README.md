@@ -28,7 +28,7 @@ npm start
 
 Open [127.0.0.1:4173](http://127.0.0.1:4173). Stop with Ctrl+C and use `npm start` to return. Rust works without installing the optional Python environments. Code uses a portable dark theme and system monospace fonts; no personal editor profile is needed.
 
-This release was tested on Windows. The core server uses cross-platform Node APIs; macOS/Linux installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 408-lesson curriculum is separate and freely navigable.
+The full app was tested on Windows, and the core tests also pass in Linux CI. macOS installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 408-lesson curriculum is separate and freely navigable.
 
 ## Two ways to learn
 
