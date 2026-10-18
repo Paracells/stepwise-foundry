@@ -17,7 +17,7 @@ There are no accounts, rankings, streaks, telemetry, payments, or required model
 
 ## Quick start
 
-Install [Node.js 22 or newer](https://nodejs.org/) and [Rust through rustup](https://rust-lang.org/tools/install/). On Windows, Rust's MSVC toolchain also needs the Visual Studio C++ build tools. Confirm `rustc --version` and `cargo --version` work in your terminal.
+Install [Node.js 22 or newer](https://nodejs.org/), then the runtime for the subject you want to study. For Rust, install [Rust through rustup](https://rust-lang.org/tools/install/) and confirm `rustc --version` and `cargo --version` work in your terminal. On Windows, Rust's MSVC toolchain also needs the Visual Studio C++ build tools. For Python, PyTorch, or Hugging Face, follow the Python and ML setup below; studying those tracks does not require Rust.
 
 ```sh
 git clone https://gitlab.com/koraji95coder/stepwise-foundry.git
@@ -30,10 +30,11 @@ Open [127.0.0.1:4173](http://127.0.0.1:4173). Stop with Ctrl+C and use `npm star
 
 The full app was tested on Windows, and the core tests also pass in Linux CI. macOS installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 408-lesson curriculum is separate and freely navigable.
 
-## Two ways to learn
+## Choose your track and learn by doing
 
-- **Open curriculum:** choose a track, read the explanation and linked documentation section, edit the commented starter, then Run or Check. Checks execute real assertions or expected compiler diagnostics. Hints and worked solutions are available. Manual field labs are explicitly self-reported.
-- **Rust beginner path:** six chapters and sixteen small sections cover folders, Cargo, a first program, values, and variables. Write predictions, submit explanations and observed output, then have a mentor review that exact submission before the next section opens. This path uses a new practice folder you choose; the app does not create or edit that external project.
+Choose from **Rust, Python, PyTorch, and Hugging Face**. All four tracks use the same practice loop: read a short explanation and the linked official documentation, predict the result, edit the commented starter, run or check it, and explain what you observed. Hints, worked solutions, notes, and exportable progress support that process. Checks execute real assertions or expected compiler diagnostics; manual field labs are explicitly self-reported.
+
+You can bring any track's exported mentor report to a person or an assistant for feedback. The app also includes an optional, section-by-section review gate workflow. Its first authored sequence is a Rust beginner project: six chapters and sixteen sections covering folders, Cargo, a first program, values, and variables. A mentor reviews each submitted prediction or explanation before the next section opens. It uses a new practice folder you choose; the app does not create or edit that external project.
 
 Mentor review is a local workflow, not an integrated AI service. Submitting does not contact Codex, Claude, or another person. Bring the exported handoff to a human mentor or an assistant with local project access. See [the beginner and mentor guide](docs/BEGINNER.md). General curriculum exercises remain available while a guided section awaits review.
 
