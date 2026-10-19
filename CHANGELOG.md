@@ -6,6 +6,7 @@ User-visible changes to Stepwise Foundry, newest first.
 
 ### Added
 
+- A root `CLAUDE.md` containing only `@AGENTS.md`, so project guidance has one maintained source.
 - A mentoring playbook and `AGENTS.md` routing table that explain how to use the system with learners, choose the relevant guides, review exact submissions, and preserve handoff context.
 - Introductory Codex and Claude Code tracks: two chapters and six self-reported labs each, with scratch-project practice, commented examples, official readings and stopping points, and visible documentation/testing scope.
 - Original lesson-revision snapshots for each explicit tool-lab submission, retained in history, backups, and mentor reports when documentation changes.
