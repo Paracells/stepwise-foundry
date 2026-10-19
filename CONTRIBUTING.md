@@ -21,6 +21,8 @@ Run the targeted chapter verifier, `npm test`, and the online link check for new
 
 ## Architecture
 
+For user-visible changes, add a concise dated entry to [CHANGELOG.md](CHANGELOG.md) describing the resulting behavior.
+
 Keep the browser interface in `public/`, tool execution in `lib/runner.mjs`, and progress persistence in `lib/progress.mjs`. Preserve local binding, request protections, timeouts, atomic saves, and readable failure messages. Never turn this runner into a public code-execution service without a separately designed isolation system.
 
 Do not commit `.data/`, generated test results, credentials, or the user's lesson drafts. Original contributions must have a compatible license; link to third-party documentation rather than copying its chapters.

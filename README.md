@@ -4,6 +4,8 @@ Learn programming locally: read a short explanation, follow the official referen
 
 Stepwise Foundry is a free, MIT-licensed learning workbench with a Monaco code editor, real local execution, and progress stored on your computer. It started as a learner's project built with Codex. The teaching material is AI-assisted and needs continued human review; passing checks or mentor review does not establish mastery.
 
+See the [changelog](CHANGELOG.md) for updates.
+
 ![Rust lesson in the local workbench](docs/workbench.png)
 
 | Track | Lessons | Runtime |
