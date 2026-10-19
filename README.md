@@ -30,6 +30,8 @@ npm start
 
 Open [127.0.0.1:4173](http://127.0.0.1:4173). Stop with Ctrl+C and use `npm start` to return. Rust works without installing the optional Python environments. Code uses a portable dark theme and system monospace fonts; no personal editor profile is needed.
 
+Use **Dark mode** in the top bar to switch the page theme. Your choice is saved in this browser; the initial theme follows your system setting. Writing fields support Tab to indent, Shift+Tab to outdent, and Esc followed by Tab to move focus out. Recognizable pasted code in notes becomes a fenced code block with a highlighted preview. Ordinary prose and terminal-output fields keep their normal paste behavior.
+
 The full app was tested on Windows, and the core tests also pass in Linux CI. macOS installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 408-lesson curriculum is separate and freely navigable.
 
 ## Choose your track and learn by doing

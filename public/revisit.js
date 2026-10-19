@@ -1,3 +1,5 @@
+import {installWritingTools} from '/writing-tools.js';
+installWritingTools();
 const $=selector=>document.querySelector(selector);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let token,items=[],selected,editor,code='',saveTimer,saving=Promise.resolve(),busy=false;

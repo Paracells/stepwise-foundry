@@ -1,3 +1,5 @@
+import {installWritingTools} from '/writing-tools.js';
+installWritingTools();
 import {renderMentorPath,captureCheckpoint,renderMentorNav,selectedPathSection} from '/mentor-path.js';
 import {mentorReviewUpdate} from '/mentor-live.js';
 const $ = (q, root=document) => root.querySelector(q);
@@ -99,7 +101,7 @@ function shell(view){
     <nav aria-label="Main navigation"><a class="nav-link ${view==='course'?'active':''}" href="#course"><span aria-hidden="true">▦</span> Curriculum</a><a class="nav-link ${view==='progress'?'active':''}" href="#progress"><span aria-hidden="true">◴</span> My progress</a><a class="nav-link ${view==='library'?'active':''}" href="#library"><span aria-hidden="true">▤</span> Reference library</a>${catalog.learningPaths?.length?`<a class="nav-link ${view==='path'?'active':''}" href="#path/beginner"><span aria-hidden="true">◇</span> Rust beginner path</a>`:''}</nav>
     <div class="sidebar-heading">YOUR LEARNING PATH</div><nav class="chapter-nav" aria-label="Chapters">${view==='path'?renderMentorNav(activePath,progress.mentoring?.[activePath.id] || activePath.initialCheckpoint,activeSectionId,esc):course.modules.map((m,i)=>{const ls=moduleLessons(m.id);const n=ls.filter(l=>completed(l.id)).length;return `<a href="#module/${m.id}" class="chapter-link ${current?.module===m.id&&view==='lesson'?'selected':''}"><span class="chapter-number ${n===ls.length?'done':''}">${n===ls.length?'✓':String(i+1).padStart(2,'0')}</span><span>${esc(m.title)}</span></a>`;}).join('')}</nav>
     <div class="sidebar-footer"><div class="small-progress"><span>${view==='path'?'Rust exercise record':'Made it your own'}</span><strong>${done} / ${course.lessons.length}</strong></div><progress value="${done}" max="${course.lessons.length}" aria-label="Course completion"></progress><p>Saved here. Built to keep.</p><span class="open-source">MIT LICENSE · OPEN SOURCE</span></div></aside>
-    <div class="page"><header class="topbar"><button class="mobile-menu icon-button" data-action="menu" aria-label="Toggle navigation">☰</button><span class="topbar-title">${view==='lesson'?esc(moduleFor(current.module).title):view==='course'?'The curriculum':view==='progress'?'Your learning record':view==='path'?'Rust beginner path':'The source material'}</span><div class="topbar-right"><span class="local-badge"><span class="status-dot"></span> Local environment</span><span class="toolchain" id="toolchain">${esc(runtimeText())}</span></div></header><main id="main" tabindex="-1">`;
+    <div class="page"><header class="topbar"><button class="mobile-menu icon-button" data-action="menu" aria-label="Toggle navigation">☰</button><span class="topbar-title">${view==='lesson'?esc(moduleFor(current.module).title):view==='course'?'The curriculum':view==='progress'?'Your learning record':view==='path'?'Rust beginner path':'The source material'}</span><div class="topbar-right"><button type="button" class="theme-toggle" data-theme-toggle aria-pressed="${document.documentElement.dataset.theme==='dark'}">Dark mode</button><span class="local-badge"><span class="status-dot"></span> Local environment</span><span class="toolchain" id="toolchain">${esc(runtimeText())}</span></div></header><main id="main" tabindex="-1">`;
 }
 function courseView(moduleId){
   const selected=moduleFor(moduleId);
@@ -251,7 +253,6 @@ document.addEventListener('click',async event=>{
   }catch(error){toast(error.message);}
 });
 document.addEventListener('keydown',event=>{
-  if(event.target.id==='code'&&event.key==='Tab'){event.preventDefault();const input=event.target;input.setRangeText('    ',input.selectionStart,input.selectionEnd,'end');files[activeFile]=input.value;syncLines();saveSoon();}
   if((event.ctrlKey||event.metaKey)&&event.key==='Enter'&&current?.kind!=='lab'&&current&&!event.target.closest('.monaco-editor')){event.preventDefault();execute('check').catch(error=>toast(error.message));}
 });
 document.addEventListener('keyup',event=>{if(event.target.id==='code')cursor();});

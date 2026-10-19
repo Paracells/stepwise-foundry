@@ -6,6 +6,9 @@ User-visible changes to Stepwise Foundry, newest first.
 
 ### Added
 
+- A saved dark-mode toggle and softer response-box backgrounds in both themes.
+- Tab indentation and Shift+Tab outdent in writing fields, with Esc then Tab to move focus out.
+- Automatic code blocks for recognizable pasted source in notes, highlighted previews, and formatted source in submission history. Terminal-output fields retain the original pasted text.
 - Submitted revision history for the guided path. Each explicit submission keeps its answer, output, timestamp, and matching mentor feedback in the page, backups, and handoffs. Draft saves do not create attempts; missing older revisions are not reconstructed.
 - An optional delayed-practice pilot with changed Rust and Python function tasks, available one and two days after their original lessons. Predictions and code are saved before checking, help opens after the first completed attempt, and assistance is recorded per attempt.
 - Opt-in Submit notifications for an existing local Codex Desktop chat, with a setup helper and documentation. Notifications are disabled by default and run only on explicit submission, without periodic AI checks.

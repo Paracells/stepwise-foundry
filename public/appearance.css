@@ -1,0 +1,47 @@
+/* Comfortable writing surfaces in both themes. The code editor keeps its theme. */
+:root{color-scheme:light;--writing-bg:#eeebf2;--writing-ink:#393342;--writing-border:#bfb6cc;--writing-readonly:#e7e3ec}
+.theme-toggle{font:12px/1.4 'Segoe UI',sans-serif;padding:7px 11px;border:1px solid #b6a8c9;border-radius:6px;background:#e8e2ef;color:#514064;white-space:nowrap}
+.theme-toggle:hover{background:#dcd1e9}.theme-toggle[aria-pressed=true]{background:#4a3f5d;border-color:#9b86b9;color:#f2eafa}
+.mentor-field textarea,.mentor-field textarea[readonly],.mentor-field input,.notes,#revisit-prediction{background:var(--writing-bg);color:var(--writing-ink);border-color:var(--writing-border);tab-size:4}
+.mentor-field textarea[readonly]{background:var(--writing-readonly);color:var(--writing-ink)}
+.writing-help{font:11px/1.7 'Segoe UI',sans-serif;color:var(--muted);margin:8px 0 20px}
+.writing-preview{margin:14px 0 20px}.writing-preview>.eyebrow{margin:0 0 8px}
+.writing-content .note-text{white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0;font-size:12px;line-height:1.8}
+.writing-content pre{margin:12px 0;padding:16px;background:var(--code-bg,#1e1e1e);color:var(--code-fg,#e6e6e6);border:1px solid var(--code-border,#4a4d54);border-radius:6px;font:13px/1.7 var(--code-font,var(--mono));white-space:pre;overflow:auto;tab-size:4;max-height:520px}
+.writing-content pre code{background:none;color:inherit;font:inherit;padding:0}
+.revisit-header{display:flex;justify-content:space-between;align-items:center;gap:16px}
+html[data-theme=dark]{color-scheme:dark;--cream:#191b22;--paper:#22252e;--ink:#e2e5ed;--muted:#b1b5c3;--line:#414653;--green:#c4afe1;--writing-bg:#292c37;--writing-readonly:#252833;--writing-ink:#e4e5ee;--writing-border:#626379;background:var(--cream);color:var(--ink)}
+html[data-theme=dark] body{background:var(--cream);color:var(--ink)}
+html[data-theme=dark] :is(h1,h2,h3,h4,h5){color:var(--ink)}
+html[data-theme=dark] :is(p,.hero-description,.reading p,.module-intro,.lesson-meta,.lesson-top,.lesson-bottom,.help-section details,.chapter-context,.reference-card p,.library-card p,.source-modules,.subtle,.notes-help,.mentor-goal,.mentor-destination p,.mentor-resume-note,.mentor-lock-message,.mentor-active-section>p,.mentor-active-section .task-card p,.mentor-archive dd,.mentor-example figcaption,.mentor-field-help,.mentor-response .section-toolbar p,.mentor-response #save-state){color:var(--muted)}
+html[data-theme=dark] :is(.eyebrow,.topbar-title,.toolchain,.chapter-card-head p,.chapter-completion>span,.module-index,.lesson-kind,.lesson-time,.row-arrow,.progress-list small,.progress-list strong,.stats-grid span,.content-footer){color:#b8abc9}
+html[data-theme=dark] :is(.chapter-card,.library-card,.reference-card,.progress-list,.mentor-active-section,.mentor-detail){background:var(--paper);border-color:var(--line)}
+html[data-theme=dark] :is(.chapter-card-head,.resume-card,.task-card,.storage-note,.stats-grid>div,.project-path-link,.mentor-next,.mentor-readings,.decision-template){background:#2c2938;border-color:#50455f;color:var(--ink)}
+html[data-theme=dark] :is(.resume-icon,.filter-bar button.chosen,.mentor-state){background:#42364f;border-color:#716080;color:#e2d2f3}
+html[data-theme=dark] :is(.resume-card p,.resume-card .eyebrow,.filter-bar button,.filter-bar>a,.source-modules,.reference-card>a,.project-path-link,.project-path-link small,.mentor-detail>summary,.mentor-field>span,.mentor-practice,.mentor-readings a,.mentor-readings strong,.mentor-readings .mentor-stopping-point,.mentor-readings .mentor-stopping-point strong,.mentor-archive dt,.mentor-goal strong){color:#d2bce9}
+html[data-theme=dark] .search{background:#292c37;border-color:#626379;color:var(--ink)}
+html[data-theme=dark] .search input{color:var(--ink)}
+html[data-theme=dark] :is(.lesson-row,.chapter-card-head,.mentor-flow-bar,.mentor-response,.lesson-meta,.course-facts,.stats-grid,.stats-grid>div,.progress-list>a,.help-section details,.mentor-gate-note){border-color:var(--line)}
+html[data-theme=dark] .lesson-row:hover{background:#302e3b}
+html[data-theme=dark] .lesson-state{background:#2a2b35;border-color:#5a5069;color:#c7b8d7}
+html[data-theme=dark] .lesson-state.complete{background:#40334f;border-color:#82639e;color:#ead4ff}
+html[data-theme=dark] .tiny-tag{border-color:#77638b;color:#d6bce9}
+html[data-theme=dark] .button.light{background:#302d3b;color:#e4d7f1;border-color:#7e6d91}
+html[data-theme=dark] .button.primary{background:#bca5dc;border-color:#bca5dc;color:#201b2b}
+html[data-theme=dark] .button.primary:hover{background:#cdb9e8;border-color:#cdb9e8}
+html[data-theme=dark] .button.secondary:not(.light){color:#ded4eb;border-color:#80708e}
+html[data-theme=dark] .filter-bar button.chosen{color:#ebdcfa}
+html[data-theme=dark] .checks-details pre{background:#242832;color:#d2dbeb;border-color:#4b566b}
+html[data-theme=dark] :is(.mentor-feedback,.mentor-review-wait){background:#26354b;border-color:#58769b}
+html[data-theme=dark] :is(.mentor-feedback p,.mentor-feedback summary,.mentor-feedback small,.mentor-feedback .eyebrow,.mentor-review-wait p,.mentor-review-wait h3){color:#d1e0f7}
+html[data-theme=dark] .mentor-state.submitted{background:#303852;color:#d1dcff}
+html[data-theme=dark] .mentor-state.reviewed{background:#243f46;color:#b8e0e8}
+html[data-theme=dark] .mentor-state.revise{background:#49372d;color:#f3caa6}
+html[data-theme=dark] .mentor-gate-note{color:#b8abc9!important}
+html[data-theme=dark] :is(progress,progress::-webkit-progress-bar){background:#41404e}
+html[data-theme=dark] progress::-moz-progress-bar{background:#bba2da}
+html[data-theme=dark] .theme-toggle:not([aria-pressed=true]){background:#2f2c3a;color:#e4d7f1}
+html[data-theme=dark] :is(input,textarea)::placeholder{color:#a4a3b6}
+html[data-theme=dark] .revisit-page article{background:var(--paper)}
+html[data-theme=dark] dialog{background:var(--paper);border-color:var(--line);color:var(--ink)}
+@media(max-width:700px){.topbar-right{gap:8px}.theme-toggle{font-size:11px;padding:6px 8px}.topbar-right .local-badge{display:none}.writing-content pre{font-size:12px;padding:12px}}

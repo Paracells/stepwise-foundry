@@ -26,6 +26,7 @@ try{await writeFile(mentorKeyFile,randomBytes(32).toString('hex'),{flag:'wx',mod
 const mentorToken=(await readFile(mentorKeyFile,'utf8')).trim();
 let busy=0; let cachedStatus;
 const staticFiles = {'/revisit':['revisit.html','text/html; charset=utf-8'],'/revisit.js':['revisit.js','text/javascript; charset=utf-8'],'/revisit.css':['revisit.css','text/css; charset=utf-8'],'/':['index.html','text/html; charset=utf-8'],'/app.js':['app.js','text/javascript; charset=utf-8'],'/mentor-path.js':['mentor-path.js','text/javascript; charset=utf-8'],'/mentor-flow.js':['mentor-flow.js','text/javascript; charset=utf-8'],'/mentor-live.js':['mentor-live.js','text/javascript; charset=utf-8'],'/style.css':['style.css','text/css; charset=utf-8'],'/editor-theme.css':['editor-theme.css','text/css; charset=utf-8'],'/favicon.svg':['favicon.svg','image/svg+xml']};
+Object.assign(staticFiles,{'/appearance.js':['appearance.js','text/javascript; charset=utf-8'],'/appearance.css':['appearance.css','text/css; charset=utf-8'],'/writing-tools.js':['writing-tools.js','text/javascript; charset=utf-8']});
 function json(res,status,data) {res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(data));}
 async function body(req) {
   const parts=[];let size=0;
