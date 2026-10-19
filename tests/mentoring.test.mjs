@@ -13,7 +13,7 @@ import {renderMentorPath} from '../public/mentor-path.js';
 import {flowFor,currentSection,sectionAccess,pathSections} from '../public/mentor-flow.js';
 
 test('beginner path reuses lessons and never derives understanding from old completion',()=>{
-  assert.equal(lessons.length,408);assert.equal(modules.length,50);
+  assert.equal(lessons.length,420);assert.equal(modules.length,54);
   assert.equal(publicCurriculum().learningPaths[0].id,'beginner');
   for(const [id] of beginnerPath.practice)assert.ok(lessonMap.has(id));
   const old=validateProgress({schemaVersion:1,lastLesson:'hello-rust',lessons:{'hello-rust':{completedAt:'2026-10-17T12:00:00Z',note:'Kept note',attempts:[]}}},new Set(lessonMap.keys()));
@@ -63,7 +63,7 @@ test('checkpoint API preserves course progress through save, backup, import, and
     let startupTimer;
     try{await Promise.race([once(child.stdout,'data'),new Promise((_,reject)=>{startupTimer=setTimeout(()=>reject(new Error('Server did not start')),10000);})]);}finally{clearTimeout(startupTimer);}
     const initial=await(await fetch(base+'/api/bootstrap')).json();token=initial.token;
-    assert.equal(initial.curriculum.lessons.length,408);assert.deepEqual(initial.progress.mentoring,{});
+    assert.equal(initial.curriculum.lessons.length,420);assert.deepEqual(initial.progress.mentoring,{});
     const brief=await(await fetch(base+'/api/beginner/brief')).text();assert.match(brief,/Rust beginner path/);assert.match(brief,/mentor/i);
     const unsaved=await(await fetch(base+'/api/beginner/handoff')).text();assert.match(unsaved,/initial template/);
     await post('save',{id:'hello-rust',files:{'main.rs':'fn main() {}'},note:'Unrelated lesson note kept private from short handoff.'});

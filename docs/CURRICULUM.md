@@ -1,11 +1,13 @@
 # Curriculum and source map
 
-408 lessons in 50 chapters across four independent tracks. Every lesson has commented code or a concrete field-lab checklist, and a relevant source link.
+420 lessons in 54 chapters across 6 independent tracks. Every lesson has commented code or a concrete field-lab checklist, and a relevant source link.
 
 - Rust: 200 lessons. Learn Rust by writing Rust. Start with Cargo, then build through ownership, concurrency, and systems programming.
 - Python: 100 lessons. Learn Python 3.15 through real programs, clear comments, precise documentation, and a testable project workflow.
 - PyTorch: 60 lessons. Build from tensor shapes and gradients to training, evaluation, checkpoints, and a complete small model. Python fundamentals are recommended first.
 - Hugging Face: 48 lessons. Learn the Hugging Face ecosystem with local datasets, trained tokenizers, tiny transformer architectures, and parameter-efficient adaptation. Python and PyTorch foundations are recommended.
+- Codex: 6 lessons. Two introductory chapters for Codex in a local desktop project: inspect context, scope actions, write project guidance, and review one tiny change. Self-reported field labs use your own separate scratch project.
+- Claude Code: 6 lessons. Two introductory chapters for the interactive Claude Code CLI: verify setup, inspect a file, understand permissions and instructions, and review a small edit. Self-reported field labs use your own separate scratch project.
 
 Python exercises use Python 3.15. PyTorch 2.14 and Hugging Face use a separate Python 3.14 CPU environment for binary-wheel compatibility. Built-in ML exercises use local data and tiny randomly initialized models, not downloaded pretrained weights.
 
@@ -970,3 +972,67 @@ These field labs extend the tested core into larger workflows. They require conc
 | 46. Evaluate a smaller representation instead of assuming equivalence | Field lab | [Hugging Face · transformers](https://huggingface.co/docs/transformers/quantization/overview) |
 | 47. Prepare an artifact for responsible sharing | Field lab | [Hugging Face · huggingface_hub](https://huggingface.co/docs/huggingface_hub/guides/upload) |
 | 48. Build an end-to-end local text experiment | Field lab | [Hugging Face · transformers](https://huggingface.co/docs/transformers/training) |
+
+## Codex / Meet Codex in your own workspace
+
+Identify your client, choose a scratch project, and inspect one file.
+
+These optional field labs teach how to work with an assistant while keeping your reasoning visible. They do not launch Codex from Foundry, require an API key in Foundry, or install an integration.
+
+Use an existing Codex setup or follow the current official setup yourself. External assistant use follows that service's account and usage rules. If unavailable, read the material and record the blocker; do not claim the experiment ran.
+
+Work in a new scratch folder. These lessons are independent of the Rust beginner path and do not authorize changes to an existing learning project. Ask a mentor to review your evidence between lessons if you want conceptual feedback.
+
+| Lesson | Mode | Relevant section |
+| --- | --- | --- |
+| 1. Identify your Codex client and current docs | Field lab | [Codex desktop setup](https://learn.chatgpt.com/docs/quickstart#setup) |
+| 2. Choose a scratch project and save a baseline | Field lab | [Give Codex task context](https://learn.chatgpt.com/docs/learn/best-practices#strong-first-use-context-and-prompts) |
+| 3. Ask for one inspection and compare the evidence | Field lab | [Plan before changing code](https://learn.chatgpt.com/docs/learn/best-practices#plan-first-for-difficult-tasks) |
+
+## Codex / Guide and review one Codex change
+
+Inspect permissions, write three instructions, and review a tiny diff.
+
+Continue with the same scratch README and baseline from the first chapter. Keep the experiment small enough that you can explain every changed line.
+
+A prompt describes your request; client permissions control available actions. Review both, then inspect the actual result. An assistant's claim that a check passed is a starting point for examining evidence.
+
+These are open, self-reported field labs. Saving completion is not mentor approval, and does not configure automatic messages or grant the assistant access.
+
+| Lesson | Mode | Relevant section |
+| --- | --- | --- |
+| 4. Inspect action permissions without changing them | Field lab | [Codex permission scope and enforcement](https://learn.chatgpt.com/docs/permissions#scope-and-enforcement) |
+| 5. Write and verify three project instructions | Field lab | [Layer Codex project instructions](https://learn.chatgpt.com/docs/agent-configuration/agents-md#layer-project-instructions) |
+| 6. Request one edit, inspect the diff, and hand it off | Field lab | [Codex testing and review](https://learn.chatgpt.com/docs/learn/best-practices#improve-reliability-with-testing-and-review) |
+
+## Claude Code / Meet Claude Code in your own workspace
+
+Identify the CLI, select a scratch project, and inspect one file.
+
+This introduction targets Claude Code's interactive CLI. Claude chat, Desktop, IDE extensions, and the API have their own workflows; do not assume their controls are interchangeable.
+
+Use your own supported setup and current official instructions. Foundry neither installs nor starts Claude Code, signs in, or stores provider credentials. External assistant use follows that service's account and usage rules.
+
+Use a separate scratch project. Small predictions and actual observations provide evidence for a mentor; a checked box alone does not demonstrate understanding.
+
+| Lesson | Mode | Relevant section |
+| --- | --- | --- |
+| 1. Identify Claude Code and check the current setup | Field lab | [Claude Code prerequisites](https://code.claude.com/docs/en/quickstart#before-you-begin) |
+| 2. Start Claude Code in a scratch project | Field lab | [Start your first Claude Code session](https://code.claude.com/docs/en/quickstart#step-2-start-your-first-session) |
+| 3. Follow a read-only question through its tools | Field lab | [Ask Claude Code your first question](https://code.claude.com/docs/en/quickstart#step-3-ask-your-first-question) |
+
+## Claude Code / Guide and review one Claude Code change
+
+Inspect permissions, write project guidance, and verify one small edit.
+
+Keep using your scratch README and baseline. You will examine the tools available to the session, introduce a small instruction file, and review one requested change.
+
+Check your installed version against current docs before using a mode or command. Instructions, permissions, and retained session context solve different problems; none substitutes for reviewing your result.
+
+Finish with a short evidence handoff. These labs do not create a background listener, add dependencies, or run a model from Foundry.
+
+| Lesson | Mode | Relevant section |
+| --- | --- | --- |
+| 4. Read the current permission mode and action scope | Field lab | [Claude Code permission modes](https://code.claude.com/docs/en/permissions#permission-modes) |
+| 5. Write and inspect a small CLAUDE.md | Field lab | [Set up a project CLAUDE.md](https://code.claude.com/docs/en/memory#set-up-a-project-claude-md) |
+| 6. Review a single Claude Code edit and make a handoff | Field lab | [Make your first Claude Code change](https://code.claude.com/docs/en/quickstart#step-4-make-your-first-code-change) |

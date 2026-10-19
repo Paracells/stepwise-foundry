@@ -1,6 +1,6 @@
 # Contributing
 
-Keep this a local learning environment centered on understanding the selected language or library. Do not add rankings, points, streaks, payments, telemetry, or a required account. The four tracks share the interface and backup format; progress, navigation, source libraries, and resume points are scoped by track.
+Keep this a local learning environment centered on understanding the selected language, library, or coding tool. Do not add rankings, points, streaks, payments, telemetry, or a required account. The six tracks share the interface and backup format; progress, navigation, source libraries, and resume points are scoped by track.
 
 ## Add or improve a lesson
 
@@ -30,3 +30,5 @@ Do not commit `.data/`, generated test results, credentials, or the user's lesso
 Guided chapters must append stable section IDs, preserve previous reviews, and keep planning, predictions, and implementation in small sections. Preserve submitted snapshots and matched feedback when changing the review flow. Test stale-ID rejection, draft preservation, backup round trips, and legacy records without inventing old submissions.
 
 The optional delayed-practice pilot is described in [REVISITS.md](docs/REVISITS.md). A revisit needs a changed task, a saved pre-check prediction, meaningful executable checks, a failing unfinished starter, and a passing worked implementation. Keep help hidden until the first completed attempt, preserve earlier assistance flags, and distinguish code correctness from conceptual review. Do not add timed AI polling, mandatory reminders, or mastery claims. Optional Codex notifications must remain explicitly configured per installation, without any real session ID or CLI path in the repository.
+
+For Codex/Claude tool lessons, follow [the verification and revision policy](AGENTS.md#current-documentation-for-tool-lessons) and [the tool-lesson guide](docs/TOOL-LESSONS.md). Record actual installed-client testing separately from documentation review, preserve original submitted lesson snapshots, and verify affected official links and examples before changing a lesson revision.

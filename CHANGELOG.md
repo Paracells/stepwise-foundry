@@ -6,6 +6,9 @@ User-visible changes to Stepwise Foundry, newest first.
 
 ### Added
 
+- Introductory Codex and Claude Code tracks: two chapters and six self-reported labs each, with scratch-project practice, commented examples, official readings and stopping points, and visible documentation/testing scope.
+- Original lesson-revision snapshots for each explicit tool-lab submission, retained in history, backups, and mentor reports when documentation changes.
+- A current-documentation policy in `AGENTS.md`: verify the installed surface/version and relevant official docs before teaching, preserve earlier evidence, and avoid scheduled AI polling.
 - Repository-level `AGENTS.md` guidance for application maintenance, learner-owned practice, exact-submission review, verification, and clean public defaults.
 - A saved dark-mode toggle and softer response-box backgrounds in both themes.
 - Tab indentation and Shift+Tab outdent in writing fields, with Esc then Tab to move focus out.

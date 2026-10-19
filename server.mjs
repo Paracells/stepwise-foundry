@@ -12,6 +12,7 @@ import {updatePath} from './lib/mentoring.mjs';
 import {createSubmissionNotifier} from './lib/mentor-event-notifier.mjs';
 import {revisits,revisitMap,publicRevisit} from './curriculum/revisits.mjs';
 import {revisitSchedule,requireRevisit,revisitEntry,startRevisit,finishRevisit,revisitHelp} from './lib/revisits.mjs';
+import {submitToolLab} from './lib/tool-labs.mjs';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const port=Number(process.env.PORT || 4173);
 const store=new ProgressStore(process.env.FOUNDRY_DATA_DIR || path.join(root,'.data'),new Set(lessonMap.keys()));
@@ -155,7 +156,7 @@ const server=http.createServer(async(req,res)=>{
     if(url.pathname==='/api/lab'){
       if(lesson.kind!=='lab')return json(res,400,{error:'Use code checks for this lesson.'});
       if(!Array.isArray(input.checklist) || input.checklist.length!==lesson.steps.length || !input.checklist.every(x=>x===true) || typeof input.evidence!=='string' || input.evidence.trim().length<80)return json(res,400,{error:'Complete every checklist item and write at least 80 characters of concrete evidence.'});
-      const progress=await store.update(data=>{Object.assign(record(data,lesson.id),{checklist:input.checklist,evidence:input.evidence.slice(0,30000),completedAt:new Date().toISOString(),selfReported:true});visit(data,lesson);});
+      const progress=await store.update(data=>{const entry=record(data,lesson.id);if(lesson.documentation){submitToolLab(entry,lesson,{...input,evidence:input.evidence.slice(0,30000),note:typeof input.note==='string'?input.note.slice(0,30000):entry.note});}Object.assign(entry,{checklist:input.checklist,evidence:input.evidence.slice(0,30000),completedAt:new Date().toISOString(),selfReported:true});visit(data,lesson);});
       return json(res,200,{progress});
     }
     if(url.pathname==='/api/execute'){

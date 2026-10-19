@@ -8,6 +8,7 @@ import * as pythonCore from './07-python-core.mjs';
 import * as pythonPractice from './08-python-practice.mjs';
 import * as pytorch from './09-pytorch.mjs';
 import * as huggingface from './10-huggingface.mjs';
+import * as codingAgents from './11-coding-agents.mjs';
 import { sources as rustSources } from './helpers.mjs';
 import { tracks, additionalSources } from './tracks.mjs';
 import { references } from './references.mjs';
@@ -15,8 +16,8 @@ import { beginnerPath } from './beginner-path.mjs';
 export { tracks };
 export const sources={...rustSources,...additionalSources};
 const rustModules = [...foundations.modules, ...everyday.modules, projects.modules[0], ...abstractions.modules, ...tools.modules, ...advanced.modules, projects.modules[1]].map(m=>({...m,track:'rust'}));
-export const modules=[...rustModules,...pythonCore.modules,...pythonPractice.modules,...pytorch.modules,...huggingface.modules];
-const allLessons = [...foundations.lessons, ...everyday.lessons, ...abstractions.lessons, ...tools.lessons, ...advanced.lessons, ...projects.lessons,...pythonCore.lessons,...pythonPractice.lessons,...pytorch.lessons,...huggingface.lessons];
+export const modules=[...rustModules,...pythonCore.modules,...pythonPractice.modules,...pytorch.modules,...huggingface.modules,...codingAgents.modules];
+const allLessons = [...foundations.lessons, ...everyday.lessons, ...abstractions.lessons, ...tools.lessons, ...advanced.lessons, ...projects.lessons,...pythonCore.lessons,...pythonPractice.lessons,...pytorch.lessons,...huggingface.lessons,...codingAgents.lessons];
 export const lessons = modules.flatMap(m=>allLessons.filter(l=>l.module===m.id));
 for (const [index, lesson] of lessons.entries()) {
   lesson.track ||= 'rust';

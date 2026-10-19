@@ -11,13 +11,13 @@
   "scripts": {
     "start": "node server.mjs",
     "dev": "node --watch server.mjs",
-    "test": "node --test tests/workshop.test.mjs tests/api.test.mjs tests/mentoring.test.mjs tests/beginner-*.test.mjs tests/mentor-*.test.mjs tests/submission-history.test.mjs tests/revisits.test.mjs tests/release-defaults.test.mjs tests/writing-tools.test.mjs",
+    "test": "node --test tests/workshop.test.mjs tests/api.test.mjs tests/mentoring.test.mjs tests/beginner-*.test.mjs tests/mentor-*.test.mjs tests/submission-history.test.mjs tests/revisits.test.mjs tests/release-defaults.test.mjs tests/writing-tools.test.mjs tests/tool-labs.test.mjs",
     "verify:curriculum": "node scripts/verify-curriculum.mjs",
     "build:editor": "node scripts/build-editor.mjs",
     "prestart": "npm run build:editor",
     "predev": "npm run build:editor",
     "pretest": "npm run build:editor",
-    "test:core": "node --test tests/workshop.test.mjs tests/api.test.mjs tests/mentoring.test.mjs tests/beginner-*.test.mjs tests/mentor-*.test.mjs tests/submission-history.test.mjs tests/revisits.test.mjs tests/release-defaults.test.mjs tests/writing-tools.test.mjs",
+    "test:core": "node --test tests/workshop.test.mjs tests/api.test.mjs tests/mentoring.test.mjs tests/beginner-*.test.mjs tests/mentor-*.test.mjs tests/submission-history.test.mjs tests/revisits.test.mjs tests/release-defaults.test.mjs tests/writing-tools.test.mjs tests/tool-labs.test.mjs",
     "test:python": "node --test tests/python.test.mjs tests/revisit-python.test.mjs",
     "test:all": "node --test tests/*.test.mjs"
   },

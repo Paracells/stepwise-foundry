@@ -14,7 +14,7 @@ test('local API protects mutations, persists drafts, grades code, and exports ba
   const post=(route,body,extra={})=>fetch(base+'/api/'+route,{method:'POST',headers:{'Content-Type':'application/json','X-Workshop-Token':token,...extra},body:JSON.stringify(body)});
   try{
     await Promise.race([once(child.stdout,'data'),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Server did not start')),10000))]);
-    const bootstrap=await (await fetch(base+'/api/bootstrap')).json();token=bootstrap.token;assert.equal(bootstrap.curriculum.lessons.length,408);assert.equal(bootstrap.curriculum.tracks.length,4);
+    const bootstrap=await (await fetch(base+'/api/bootstrap')).json();token=bootstrap.token;assert.equal(bootstrap.curriculum.lessons.length,420);assert.equal(bootstrap.curriculum.tracks.length,6);
     const editorAsset=await fetch(base+'/assets/editor/editor.js');assert.equal(editorAsset.status,200);assert.match(editorAsset.headers.get('content-type'),/javascript/);
     assert.equal((await fetch(base+'/assets/editor/editor.worker.js')).status,200);
     assert.equal((await fetch(base+'/assets/editor/missing.js')).status,404);
@@ -33,9 +33,21 @@ test('local API protects mutations, persists drafts, grades code, and exports ba
     response=await post('save',{id:'py-first-function',files:{'main.py':'def double(value: int) -> int:\n    return value * 2\n'}});result=await response.json();assert.equal(response.status,200);
     assert.equal(result.progress.lastLessons.rust,'first-function');assert.equal(result.progress.lastLessons.python,'py-first-function');
     response=await post('solution',{id:'py-first-function'});result=await response.json();assert.match(result.files['main.py'],/#/);assert.equal(result.files['main.rs'],undefined);
+    const toolLesson=bootstrap.curriculum.lessons.find(l=>l.id==='codex-identify-client');
+    const toolEvidence='Observed desktop version and working folder match my scratch setup. I compared the current official setup section with the visible client.';
+    const toolInput={id:toolLesson.id,note:'Original observation',evidence:toolEvidence,checklist:toolLesson.steps.map(()=>true)};
+    response=await post('save',toolInput);result=await response.json();assert.equal(result.progress.lessons[toolLesson.id].toolLabHistory,undefined);
+    response=await post('lab',{...toolInput,documentation:{revision:'forged'}});result=await response.json();assert.equal(response.status,200);
+    const snapshot=result.progress.lessons[toolLesson.id].toolLabHistory[0];
+    assert.equal(snapshot.lesson.documentation.revision,toolLesson.documentation.revision);assert.equal(snapshot.lesson.task,toolLesson.task);
+    response=await post('save',{...toolInput,note:'Newer unsubmitted notes',evidence:'Newer draft'});result=await response.json();
+    assert.deepEqual(result.progress.lessons[toolLesson.id].toolLabHistory,[snapshot]);
+    assert.equal(result.progress.lastLessons.codex,toolLesson.id);assert.equal(result.progress.lastLessons.rust,'first-function');
     const backup=await (await fetch(base+'/api/export')).json();assert.deepEqual(backup.lessons['first-function'].files,draft);
     const report=await (await fetch(base+'/api/report')).text();assert.match(report,/I understand the final expression/);
+    assert.deepEqual(backup.lessons[toolLesson.id].toolLabHistory,[snapshot]);
     response=await post('import',backup);assert.equal(response.status,200);
+    result=await response.json();assert.deepEqual(result.progress.lessons[toolLesson.id].toolLabHistory,[snapshot]);
     response=await post('import',{schemaVersion:1,lastLesson:'first-function',lessons:{'first-function':backup.lessons['first-function']}});assert.equal(response.status,200);
     response=await post('save',{id:'py-first-function',files:{'main.py':'def double(n): return n * 2'}});result=await response.json();assert.equal(result.progress.lastLessons.rust,'first-function');assert.deepEqual(result.progress.lessons['first-function'].files,draft);
     const slowFiles={'main.rs':'pub fn double(value:i32)->i32 { std::thread::sleep(std::time::Duration::from_millis(200)); value*2 }'};

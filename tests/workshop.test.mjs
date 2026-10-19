@@ -7,8 +7,8 @@ import { modules, lessons, lessonMap, publicCurriculum } from '../curriculum/ind
 import { runLesson, validateFiles, execute } from '../lib/runner.mjs';
 import { ProgressStore, validateProgress, mentorReport } from '../lib/progress.mjs';
 test('curriculum has complete, uniquely identified lessons with comments and section links',()=>{
-  assert.equal(lessons.length,408);assert.equal(lessonMap.size,lessons.length);assert.equal(new Set(modules.map(m=>m.id)).size,modules.length);
-  for(const [track,count] of Object.entries({rust:200,python:100,pytorch:60,huggingface:48}))assert.equal(lessons.filter(l=>l.track===track).length,count);
+  assert.equal(lessons.length,420);assert.equal(lessonMap.size,lessons.length);assert.equal(new Set(modules.map(m=>m.id)).size,modules.length);
+  for(const [track,count] of Object.entries({rust:200,python:100,pytorch:60,huggingface:48,codex:6,claude:6}))assert.equal(lessons.filter(l=>l.track===track).length,count);
   for(const lesson of lessons){
     assert.ok(modules.some(m=>m.id===lesson.module),lesson.id);
     assert.ok(lesson.explanation.join(' ').length>120,lesson.id);

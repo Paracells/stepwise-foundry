@@ -1,6 +1,6 @@
 # Stepwise Foundry agent instructions
 
-Stepwise Foundry is a local, MIT-licensed programming learning environment for Rust, Python, PyTorch, and Hugging Face. Read `README.md` and `CONTRIBUTING.md` for setup and contribution conventions. Keep this checkout generic and ready for a new learner.
+Stepwise Foundry is a local, MIT-licensed programming learning environment for Rust, Python, PyTorch, Hugging Face, and introductory coding-agent practice. Read `README.md` and `CONTRIBUTING.md` for setup and contribution conventions. Keep this checkout generic and ready for a new learner.
 
 ## Application and curriculum changes
 
@@ -12,6 +12,14 @@ Stepwise Foundry is a local, MIT-licensed programming learning environment for R
 - Author a requested guided chapter fully as small prediction, planning, implementation, and transfer sections with review gates. Do not preselect an external learner's project, UI framework, architecture, or dependencies.
 - Follow `docs/REVISITS.md` for delayed practice. Preserve first-attempt assistance evidence, changed tasks, and hidden help; do not claim long-term retention from immediate success.
 - Add user-visible changes to `CHANGELOG.md`. For curriculum/reference changes, follow `docs/CURRICULUM.md` and `CONTRIBUTING.md`, verify affected starters and solutions, check new official links, and regenerate the curriculum map when needed.
+
+## Current documentation for tool lessons
+
+- Before authoring or teaching Codex/Claude lessons, open the relevant current official documentation and release notes, and compare them with the learner's installed product/version. Distinguish Desktop, CLI, IDE, and API behavior and the learner's operating system; do not assume one surface's features apply to another.
+- Keep each tool lesson's product/surface, OS scope, tested version or explicit untested status, exact official section links, and last-verification date with the lesson. Update that date only after checking the content and affected examples, not merely a successful URL response.
+- Recheck affected commands, settings, and examples before teaching them. If docs and observed behavior disagree, mark the step as needing verification and resolve the mismatch before assigning it; do not invent a command or silently change the learner's setup.
+- Review documentation changes before updating lessons, verify affected examples, and record meaningful changes in the changelog. Preserve the lesson revision associated with existing submitted evidence; a new concept may need a short follow-up exercise, never a reset or rewrite of completed work. If the app cannot attach lesson revisions yet, preserve the old content in version control and make that limitation explicit.
+- Check at authoring, chapter start, publication, or a reported mismatch. Do not create scheduled AI polling or auto-apply upstream documentation changes. Keep this durable policy here and changing versions/dates in lesson metadata.
 
 ## Verification
 

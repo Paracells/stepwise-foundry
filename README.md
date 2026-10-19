@@ -14,6 +14,8 @@ See the [changelog](CHANGELOG.md) for updates.
 | Python | 100 | Python 3.15 |
 | PyTorch | 60 | PyTorch 2.14 CPU, Python 3.14 |
 | Hugging Face | 48 | Python 3.14 with the pinned ML packages |
+| Codex | 6 | Self-reported labs; your own desktop client |
+| Claude Code | 6 | Self-reported labs; your own interactive CLI |
 
 There are no accounts, rankings, streaks, telemetry, payments, or required model API keys. Built-in ML exercises use tiny local data and randomly initialized models without downloading pretrained weights. Online documentation and first-time dependency installation require internet access.
 
@@ -32,17 +34,23 @@ Open [127.0.0.1:4173](http://127.0.0.1:4173). Stop with Ctrl+C and use `npm star
 
 Use **Dark mode** in the top bar to switch the page theme. Your choice is saved in this browser; the initial theme follows your system setting. Writing fields support Tab to indent, Shift+Tab to outdent, and Esc followed by Tab to move focus out. Recognizable pasted code in notes becomes a fenced code block with a highlighted preview. Ordinary prose and terminal-output fields keep their normal paste behavior.
 
-The full app was tested on Windows, and the core tests also pass in Linux CI. macOS installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 408-lesson curriculum is separate and freely navigable.
+The full app was tested on Windows, and the core tests also pass in Linux CI. macOS installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 420-lesson curriculum is separate and freely navigable.
 
 ## Choose your track and learn by doing
 
-Choose from **Rust, Python, PyTorch, and Hugging Face**. All four tracks use the same practice loop: read a short explanation and the linked official documentation, predict the result, edit the commented starter, run or check it, and explain what you observed. Hints, worked solutions, notes, and exportable progress support that process. Checks execute real assertions or expected compiler diagnostics; manual field labs are explicitly self-reported.
+The **Rust, Python, PyTorch, and Hugging Face** tracks use the same practice loop: read a short explanation and the linked official documentation, predict the result, edit the commented starter, run or check it, and explain what you observed. Hints, worked solutions, notes, and exportable progress support that process. Checks execute real assertions or expected compiler diagnostics; manual field labs are explicitly self-reported.
 
 You can bring any track's exported mentor report to a person or an assistant for feedback. The app also includes an optional, section-by-section review gate workflow. Its first authored sequence is a Rust beginner project: eight chapters and thirty sections covering folders, Cargo, a first program, values, variables, functions, and function inputs. Small prediction/planning sections precede project edits. A mentor reviews the exact response before the next section opens. It uses a new practice folder you choose; the app does not create or edit that external project.
 
 Mentor review is a local workflow, with messaging disabled by default. Bring the exported handoff to a human mentor or an assistant with local project access. An optional [Codex Desktop bridge](docs/CODEX-DESKTOP.md) queues a request in an existing chat only when you explicitly submit. It needs no model API key or periodic AI checks; actual reviews use your normal Codex allowance. Automatic local feedback updates show a recorded review and open the next section without losing the preceding feedback. See [the beginner and mentor guide](docs/BEGINNER.md). General curriculum exercises remain available while a guided section awaits review.
 
 Local checks assess executable code. Written predictions and explanations are saved for comparison or mentor review; they are not automatically graded for understanding.
+
+## Learn to work with coding agents
+
+Choose **Codex** or **Claude Code** for two introductory chapters each, with six small self-reported labs per tool. Use a separate scratch project to inspect a file, understand permissions, write three project instructions, and review one tiny change. Readings have exact official links and stopping points. The page shows when documentation was checked and explicitly says that the initial external-client workflows were not run by the author; verify your installed client before trying them.
+
+Each explicit tool-lab submission retains its original lesson revision, prompt, readings, example, notes, and evidence. Later lesson updates or draft edits do not replace it. These open labs have no automatic conceptual grader, review gates, external-agent calls, or Submit notifications. External assistant use follows that service's account and usage rules; Foundry itself needs no account or provider key. See [the tool-lesson guide](docs/TOOL-LESSONS.md) for scope, version verification, and evidence history.
 
 ## Try a concept again later
 
@@ -64,7 +72,7 @@ On macOS/Linux, install Python 3.15 yourself or set `PYTHON315` to its executabl
 
 ## Keep your learning record
 
-Drafts, notes, attempts, review receipts, and completion records live in `.data/progress.json`, with atomic saves and a previous-file recovery copy. Each new guided submission retains a snapshot of its answer/output and the mentor feedback attached to that submission ID, so a requested revision does not erase the earlier attempt. Draft saves are not submission attempts. Older versions from before history was enabled may be unavailable; no missing history is reconstructed. Export a JSON backup or a mentor report from **My progress**. Backups include all four tracks, submitted revision history, and delayed-practice attempts. Restoring replaces the active record and keeps its previous version locally; imported completion and review claims are preserved rather than regraded.
+Drafts, notes, attempts, review receipts, and completion records live in `.data/progress.json`, with atomic saves and a previous-file recovery copy. Each new guided submission retains a snapshot of its answer/output and the mentor feedback attached to that submission ID, so a requested revision does not erase the earlier attempt. Draft saves are not submission attempts. Older versions from before history was enabled may be unavailable; no missing history is reconstructed. Export a JSON backup or a mentor report from **My progress**. Backups include all six tracks, submitted revision history, and delayed-practice attempts. Restoring replaces the active record and keeps its previous version locally; imported completion and review claims are preserved rather than regraded.
 
 Learning records, mentor keys, virtual environments, and generated assets are ignored by Git. Do not attach real progress backups or private terminal output to a public issue. No learner history is included in this repository.
 
