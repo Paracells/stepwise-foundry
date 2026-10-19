@@ -6,6 +6,7 @@ User-visible changes to Stepwise Foundry, newest first.
 
 ### Added
 
+- Repository-level `AGENTS.md` guidance for application maintenance, learner-owned practice, exact-submission review, verification, and clean public defaults.
 - A saved dark-mode toggle and softer response-box backgrounds in both themes.
 - Tab indentation and Shift+Tab outdent in writing fields, with Esc then Tab to move focus out.
 - Automatic code blocks for recognizable pasted source in notes, highlighted previews, and formatted source in submission history. Terminal-output fields retain the original pasted text.
