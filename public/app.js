@@ -1,8 +1,10 @@
 import {renderMentorPath,captureCheckpoint,renderMentorNav,selectedPathSection} from '/mentor-path.js';
+import {mentorReviewUpdate} from '/mentor-live.js';
 const $ = (q, root=document) => root.querySelector(q);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let catalog, course, trackInfo, activeTrack='rust', progress, token, status={}, current, files={}, activeFile='', saveTimer, search='', filter='all', running=false, lastOutput='', lastResult=null;
 let codeEditor=null, editorModule, activePath=null, activeSectionId=null, pathBusy=false;
+let mentorReviewStream=null,mentorReviewRefreshRequested=false,mentorReviewRefreshTask=null;
 const loadEditor=()=>editorModule ||= import('/assets/editor/editor.js');
 const readCode=()=>codeEditor?codeEditor.getValue():$('#code')?.value;
 function disposeEditor(){codeEditor?.dispose();codeEditor=null;}
@@ -59,6 +61,37 @@ async function api(route,data){
 }
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),4500);}
 function refreshProgressChrome(){const done=course.lessons.filter(l=>completed(l.id)).length;const label=$('.small-progress strong');if(label)label.textContent=`${done} / ${course.lessons.length}`;const bar=$('.sidebar-footer progress');if(bar)bar.value=done;}
+function connectMentorReviews(){
+  if(!activePath){mentorReviewStream?.close();mentorReviewStream=null;mentorReviewRefreshRequested=false;return;}
+  if(mentorReviewStream||!window.EventSource)return;
+  mentorReviewStream=new EventSource('/api/path/events');
+  // Reconnection also catches reviews saved while the page was disconnected.
+  mentorReviewStream.addEventListener('ready',requestMentorReviewRefresh);
+  mentorReviewStream.addEventListener('review',event=>{
+    const review=JSON.parse(event.data);
+    if(review.pathId===activePath?.id)requestMentorReviewRefresh();
+  });
+}
+function requestMentorReviewRefresh(){
+  mentorReviewRefreshRequested=true;
+  if(mentorReviewRefreshTask||pathBusy||pendingSave||!activePath)return;
+  mentorReviewRefreshTask=(async()=>{
+    while(mentorReviewRefreshRequested&&activePath&&!pathBusy&&!pendingSave){
+      mentorReviewRefreshRequested=false;
+      const path=activePath,sectionId=activeSectionId;
+      const result=await api('bootstrap');token=result.token;
+      if(activePath?.id!==path.id||activeSectionId!==sectionId)continue;
+      if(pathBusy||pendingSave){mentorReviewRefreshRequested=true;break;}
+      const update=mentorReviewUpdate(path,progress.mentoring?.[path.id] || path.initialCheckpoint,result.progress.mentoring?.[path.id] || path.initialCheckpoint,sectionId);
+      progress=result.progress;
+      // Refresh navigation without replacing the contents or focus of an editable draft.
+      if(!update){$('.chapter-nav').innerHTML=renderMentorNav(path,progress.mentoring?.[path.id] || path.initialCheckpoint,sectionId,esc);continue;}
+      history.replaceState(null,'',`#path/${path.id}/${update.sectionId}`);route();
+      (update.outcome==='revise'?$('.mentor-active-section .mentor-feedback'):$('#mentor-section-title'))?.focus();
+      toast(update.outcome==='advance'?'Approved. The next section is ready.':'Mentor feedback is ready. You can revise this response.');
+    }
+  })().catch(()=>toast('Automatic feedback could not refresh. Use Refresh learning record to reconnect.')).finally(()=>{mentorReviewRefreshTask=null;});
+}
 function shell(view){
   const done=course.lessons.filter(l=>completed(l.id)).length;
   return `<aside class="sidebar"><a class="brand" href="#course"><span class="brand-mark ${activeTrack==='rust'?'':'wide'}">${esc(({rust:'R',python:'Py',pytorch:'T',huggingface:'HF'})[activeTrack])}<span>↗</span></span><span>Stepwise<br><strong>Foundry</strong></span></a>
@@ -105,7 +138,7 @@ function editorContent(){return `<section class="workbench" aria-label="Source c
 function lessonNavigation(){const i=course.lessons.indexOf(current),prev=course.lessons[i-1],next=course.lessons[i+1];return `<div>${prev?`<a href="#lesson/${prev.id}">← Previous lesson</a>`:''}</div><a href="#module/${current.module}">Chapter overview</a><div>${next?`<a href="#lesson/${next.id}">Next lesson →</a>`:'<a href="#progress">View your progress →</a>'}</div>`;}
 function progressView(){
   const done=course.lessons.filter(l=>completed(l.id)), labs=done.filter(l=>l.kind==='lab').length, attempts=course.lessons.reduce((n,l)=>n+(stateFor(l.id).attempts?.length||0),0);
-  return `${shell('progress')}<div class="course-content"><div class="eyebrow">A RECORD OF YOUR UNDERSTANDING</div><h1>Your work, kept.</h1><p class="hero-description">Your drafts, notes, and check results stay on this computer. Export a backup to keep them safe, or a mentor report to continue learning with help.</p><div class="stats-grid"><div><strong>${done.length-labs}</strong><span>code lessons checked</span></div><div><strong>${labs}</strong><span>self-reported labs</span></div><div><strong>${attempts}</strong><span>runs & checks recorded</span></div></div><div class="export-actions"><a class="button primary" href="/api/export" download>Export progress backup ↓</a><a class="button secondary light" href="/api/report" download>Export mentor report ↓</a><label class="button secondary light" for="import-file">Restore backup ↑</label><input type="file" id="import-file" accept=".json,application/json" hidden></div><p class="subtle">Backups contain all four tracks. Restore replaces the complete learning record and keeps the previous file as progress.previous.json. Imported completions retain their saved status.</p><div class="section-toolbar"><div><h2>Chapter by chapter</h2><p>Completion marks remain while you revisit and improve a draft.</p></div></div><div class="progress-list">${course.modules.map(m=>{const ls=moduleLessons(m.id),n=ls.filter(l=>completed(l.id)).length;return `<a href="#module/${m.id}"><div><span>${esc(m.title)}</span><small>${esc(m.stage)}</small></div><progress value="${n}" max="${ls.length}" aria-label="${esc(m.title)} completion"></progress><strong>${n} / ${ls.length}</strong></a>`;}).join('')}</div><div class="storage-note"><h2>Bring the right context to your next conversation</h2><p>The mentor report includes completed topics, your notes, current code, recent unsuccessful checks, and whether you opened a worked solution. Share it when you want help that starts where you are.</p><p>Learning data is stored in <code>.data/progress.json</code> inside this project, independently of browser storage. Back up that file or use the export above.</p></div></div></main></div>`;
+  return `${shell('progress')}<div class="course-content"><div class="eyebrow">A RECORD OF YOUR UNDERSTANDING</div><h1>Your work, kept.</h1><p class="hero-description">Your drafts, notes, and check results stay on this computer. Export a backup to keep them safe, or a mentor report to continue learning with help.</p><div class="stats-grid"><div><strong>${done.length-labs}</strong><span>code lessons checked</span></div><div><strong>${labs}</strong><span>self-reported labs</span></div><div><strong>${attempts}</strong><span>runs & checks recorded</span></div></div><p><a class="button secondary light" href="/revisit">Revisit a concept · optional Rust/Python practice →</a></p><div class="export-actions"><a class="button primary" href="/api/export" download>Export progress backup ↓</a><a class="button secondary light" href="/api/report" download>Export mentor report ↓</a><label class="button secondary light" for="import-file">Restore backup ↑</label><input type="file" id="import-file" accept=".json,application/json" hidden></div><p class="subtle">Backups contain all four tracks. Restore replaces the complete learning record and keeps the previous file as progress.previous.json. Imported completions retain their saved status.</p><div class="section-toolbar"><div><h2>Chapter by chapter</h2><p>Completion marks remain while you revisit and improve a draft.</p></div></div><div class="progress-list">${course.modules.map(m=>{const ls=moduleLessons(m.id),n=ls.filter(l=>completed(l.id)).length;return `<a href="#module/${m.id}"><div><span>${esc(m.title)}</span><small>${esc(m.stage)}</small></div><progress value="${n}" max="${ls.length}" aria-label="${esc(m.title)} completion"></progress><strong>${n} / ${ls.length}</strong></a>`;}).join('')}</div><div class="storage-note"><h2>Bring the right context to your next conversation</h2><p>The mentor report includes completed topics, your notes, current code, recent unsuccessful checks, and whether you opened a worked solution. Share it when you want help that starts where you are.</p><p>Learning data is stored in <code>.data/progress.json</code> inside this project, independently of browser storage. Back up that file or use the export above.</p></div></div></main></div>`;
 }
 function libraryView(){return `${shell('library')}<div class="course-content"><div class="eyebrow">LEARN TO READ THE PRIMARY SOURCES</div><h1>A map of the docs.</h1><p class="hero-description">${activeTrack==='rust'?'Start with the Rust Book. Reach for the Reference when you need a precise language rule, and the standard library when you need an API.':'Read the linked sections alongside each exercise. Library APIs and language versions have separate compatibility requirements; the runtime badge shows what executes your code.'}</p><div class="library-grid">${Object.entries(course.sources).map(([key,[title,url]])=>`<article class="library-card"><span class="eyebrow">${['unstable','nomicon','embedded','embedonomicon','fls','godbolt'].includes(key)?'ADVANCED READING':'YOUR EVERYDAY TOOLKIT'}</span><h2>${link(url,title)}</h2><p>${esc(sourceDescriptions[key] || 'Keep this primary source nearby while working through the associated lessons.')}</p><div class="source-modules">${course.modules.filter(m=>m.source===key).map(m=>`<a href="#module/${m.id}">${esc(m.title)} →</a>`).join('') || '<span>Linked throughout the course</span>'}</div></article>`).join('')}</div><div class="storage-note"><h2>What this curriculum covers</h2><p>${esc(trackInfo.description)} Chapters include automatically checked code and clearly labeled field labs. All exercises include comments and a relevant section link.</p><p>This is a broad guided curriculum, with links for deeper study; it does not reproduce every API or replace the primary documentation. Teaching text and exercises are original. Referenced documentation retains its own license.</p><p>Built-in exercises run locally after their runtimes are installed. Python uses 3.15; the PyTorch and Hugging Face tracks use a separate Python 3.14 environment for wheel compatibility. ML exercises use offline mode, tiny local models, and local data. Remote downloads, hardware, publishing, and larger training are field labs.</p></div></div></main></div>`;}
 const sourceDescriptions={book:'The main learning spine: syntax, ownership, data modeling, errors, traits, concurrency, async, and larger projects.',cargo:'Project structure, manifests, features, workspaces, profiles, testing, packaging, and reproducible builds.',reference:'Precise descriptions of types, expressions, patterns, visibility, attributes, layout, and language rules.',std:'Types and APIs for collections, text, files, synchronization, time, processes, and more.',cli:'Build useful terminal programs with clear configuration, input handling, output, errors, and packaging.',rustc:'Compiler options, editions, diagnostics, lints, code generation, and target configuration.',rustdoc:'Documentation comments, runnable examples, intra-doc links, and documentation testing.',errors:'Search an error code when you want a focused explanation and a smaller example.',nomicon:'Unsafe contracts, representation, aliasing, variance, drop checking, FFI, and sound abstractions.',embedded:'no_std foundations, peripheral models, concurrency, communication, and hardware setup.',embedonomicon:'Startup, memory layout, runtime boundaries, linker scripts, and cross-compilation.',unstable:'Feature-gated experiments. Nightly behavior can change; check tracking issues before relying on a feature.',fls:'Ferrocene language specification and traceability documentation.',godbolt:'Compare emitted assembly and compiler options. Understand a measurement before optimizing it.'};
@@ -130,15 +163,17 @@ function route(){
     disposeEditor();$('#app').innerHTML=codeView();syncLines();mountWorkbench();saveSoon(false);
   }else $('#app').innerHTML=view==='progress'?progressView():view==='library'?libraryView():courseView(view==='module'?id:undefined);
   window.scrollTo(0,0);document.title=(activePath?activePath.title:current?current.title:trackInfo.title+' Workshop')+' — Stepwise Foundry';
+  connectMentorReviews();
 }
 function capture(){if(activePath)return captureCheckpoint();if(!current)return null;const note=$('#lesson-note')?.value || '';const data={id:current.id,note};if(current.kind==='lab'){data.evidence=$('#lab-evidence')?.value || '';data.checklist=[...document.querySelectorAll('[data-step]')].map(i=>i.checked);}else{if(readCode()!==undefined)files[activeFile]=readCode();data.files={...files};}return data;}
 let pendingSave=null, saving=Promise.resolve();
 function saveSoon(recover=true){const data=capture();if(!data)return;pendingSave=data;if(recover){try{localStorage.setItem(recoveryKey,JSON.stringify(data));}catch{}}if($('#save-state'))$('#save-state').textContent='Saving…';clearTimeout(saveTimer);saveTimer=setTimeout(()=>flushSave().catch(error=>toast(error.message)),500);}
-async function flushSave(){clearTimeout(saveTimer);if(!pendingSave)return saving;const data=pendingSave;pendingSave=null;saving=saving.catch(()=>{}).then(async()=>{const result=await api(saveRoute(data),data);progress=result.progress;try{const saved=JSON.parse(localStorage.getItem(recoveryKey)||'null');if(saved?.id===data.id && JSON.stringify(saved)===JSON.stringify(data))localStorage.removeItem(recoveryKey);}catch{}if(((data.id&&current?.id===data.id)||(data.pathId&&activePath?.id===data.pathId))&&$('#save-state')){$('#save-state').textContent='Saved locally';const timestamp=progress.mentoring?.[data.pathId]?.updatedAt;if(timestamp&&$('#checkpoint-saved-at'))$('#checkpoint-saved-at').textContent='Last saved '+new Date(timestamp).toLocaleString();}});return saving;}
+async function flushSave(){clearTimeout(saveTimer);if(!pendingSave)return saving;const data=pendingSave;pendingSave=null;saving=saving.catch(()=>{}).then(async()=>{const result=await api(saveRoute(data),data);progress=result.progress;try{const saved=JSON.parse(localStorage.getItem(recoveryKey)||'null');if(saved?.id===data.id && JSON.stringify(saved)===JSON.stringify(data))localStorage.removeItem(recoveryKey);}catch{}if(((data.id&&current?.id===data.id)||(data.pathId&&activePath?.id===data.pathId))&&$('#save-state')){$('#save-state').textContent='Saved locally';const timestamp=progress.mentoring?.[data.pathId]?.updatedAt;if(timestamp&&$('#checkpoint-saved-at'))$('#checkpoint-saved-at').textContent='Last saved '+new Date(timestamp).toLocaleString();}}).finally(()=>{if(mentorReviewRefreshRequested)requestMentorReviewRefresh();});return saving;}
 function syncLines(){const code=$('#code');if(!code)return;$('#line-numbers').textContent=Array.from({length:code.value.split('\n').length},(_,i)=>i+1).join('\n');cursor();}
 async function pathAction(action){
   if(pathBusy||!activePath)return;
-  const pathId=activePath.id,sectionId=activeSectionId;
+  const path=activePath,pathId=path.id,sectionId=activeSectionId;
+  let notification,targetSectionId=sectionId;
   pathBusy=true;
   if(action==='path-submit')saveSoon();
   // Freeze the captured response while it is being submitted, including during autosave.
@@ -147,15 +182,18 @@ async function pathAction(action){
   try{
     await flushSave();
     if(action==='path-refresh'){
-      const result=await api('bootstrap');progress=result.progress;token=result.token;
+      const result=await api('bootstrap');
+      const update=mentorReviewUpdate(path,progress.mentoring?.[pathId] || path.initialCheckpoint,result.progress.mentoring?.[pathId] || path.initialCheckpoint,sectionId);
+      targetSectionId=update?.sectionId || sectionId;progress=result.progress;token=result.token;
     }else{
       const result=await api(action==='path-submit'?'path/submit':'path/revise',{pathId,sectionId});progress=result.progress;
+      notification=result.notification;
     }
     if(activePath?.id===pathId&&activeSectionId===sectionId){
-      history.replaceState(null,'',`#path/${pathId}/${sectionId}`);route();
+      history.replaceState(null,'',`#path/${pathId}/${targetSectionId}`);route();
       $('#mentor-section-title')?.focus();
     }
-    if(action==='path-submit')toast('Response submitted. Ask for review in this chat; the next section stays locked.');
+    if(action==='path-submit')toast(notification?.status==='queued'?'Response submitted. Review request queued in the mentoring chat; the next section stays locked.':notification?.status==='failed'?'Response saved, but the mentor notification failed. Ask for review in the chat.':'Response submitted. Ask your mentor to review; the next section stays locked.');
   }catch(error){
     if(activePath?.id===pathId&&activeSectionId===sectionId){
       const pending=progress.mentoring?.[pathId]?.flow?.sections[sectionId]?.status==='submitted';
@@ -163,7 +201,7 @@ async function pathAction(action){
       document.querySelectorAll('[data-action="path-submit"],[data-action="path-revise"],[data-action="path-refresh"],[data-action="save-checkpoint"]').forEach(button=>button.disabled=false);
     }
     throw error;
-  }finally{pathBusy=false;}
+  }finally{pathBusy=false;if(mentorReviewRefreshRequested)requestMentorReviewRefresh();}
 }
 function cursor(){const code=$('#code');if(!code)return;const before=code.value.slice(0,code.selectionStart),line=before.split('\n');$('#cursor-position').textContent=`Ln ${line.length}, Col ${line.at(-1).length+1}`;}
 async function execute(mode){

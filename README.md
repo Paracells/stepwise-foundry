@@ -34,9 +34,15 @@ The full app was tested on Windows, and the core tests also pass in Linux CI. ma
 
 Choose from **Rust, Python, PyTorch, and Hugging Face**. All four tracks use the same practice loop: read a short explanation and the linked official documentation, predict the result, edit the commented starter, run or check it, and explain what you observed. Hints, worked solutions, notes, and exportable progress support that process. Checks execute real assertions or expected compiler diagnostics; manual field labs are explicitly self-reported.
 
-You can bring any track's exported mentor report to a person or an assistant for feedback. The app also includes an optional, section-by-section review gate workflow. Its first authored sequence is a Rust beginner project: six chapters and sixteen sections covering folders, Cargo, a first program, values, and variables. A mentor reviews each submitted prediction or explanation before the next section opens. It uses a new practice folder you choose; the app does not create or edit that external project.
+You can bring any track's exported mentor report to a person or an assistant for feedback. The app also includes an optional, section-by-section review gate workflow. Its first authored sequence is a Rust beginner project: eight chapters and thirty sections covering folders, Cargo, a first program, values, variables, functions, and function inputs. Small prediction/planning sections precede project edits. A mentor reviews the exact response before the next section opens. It uses a new practice folder you choose; the app does not create or edit that external project.
 
-Mentor review is a local workflow, not an integrated AI service. Submitting does not contact Codex, Claude, or another person. Bring the exported handoff to a human mentor or an assistant with local project access. See [the beginner and mentor guide](docs/BEGINNER.md). General curriculum exercises remain available while a guided section awaits review.
+Mentor review is a local workflow, with messaging disabled by default. Bring the exported handoff to a human mentor or an assistant with local project access. An optional [Codex Desktop bridge](docs/CODEX-DESKTOP.md) queues a request in an existing chat only when you explicitly submit. It needs no model API key or periodic AI checks; actual reviews use your normal Codex allowance. Automatic local feedback updates show a recorded review and open the next section without losing the preceding feedback. See [the beginner and mentor guide](docs/BEGINNER.md). General curriculum exercises remain available while a guided section awaits review.
+
+Local checks assess executable code. Written predictions and explanations are saved for comparison or mentor review; they are not automatically graded for understanding.
+
+## Try a concept again later
+
+**My progress → Revisit a concept** opens an optional [delayed-practice pilot](docs/REVISITS.md): one changed Rust function task after a day and one Python task after two days. Each becomes available after its original lesson is completed. Save a prediction and code attempt before checking, then compare the result. Hints and the worked example become available after the first completed attempt; assistance is recorded per attempt. These revisits keep their own history and do not alter course completion, block lessons, or claim mastery. There are no scheduled agent wakeups.
 
 ## Optional Python and ML tracks
 
@@ -54,7 +60,7 @@ On macOS/Linux, install Python 3.15 yourself or set `PYTHON315` to its executabl
 
 ## Keep your learning record
 
-Drafts, notes, attempts, review receipts, and completion records live in `.data/progress.json`, with atomic saves and a previous-file recovery copy. Export a JSON backup or a mentor report from **My progress**. Backups include all four tracks. Restoring replaces the active record and keeps its previous version locally; imported completion and review claims are preserved rather than regraded.
+Drafts, notes, attempts, review receipts, and completion records live in `.data/progress.json`, with atomic saves and a previous-file recovery copy. Each new guided submission retains a snapshot of its answer/output and the mentor feedback attached to that submission ID, so a requested revision does not erase the earlier attempt. Draft saves are not submission attempts. Older versions from before history was enabled may be unavailable; no missing history is reconstructed. Export a JSON backup or a mentor report from **My progress**. Backups include all four tracks, submitted revision history, and delayed-practice attempts. Restoring replaces the active record and keeps its previous version locally; imported completion and review claims are preserved rather than regraded.
 
 Learning records, mentor keys, virtual environments, and generated assets are ignored by Git. Do not attach real progress backups or private terminal output to a public issue. No learner history is included in this repository.
 

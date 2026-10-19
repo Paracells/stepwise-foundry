@@ -1,5 +1,18 @@
 // A section review is a teaching checkpoint, never a claim of mastery.
 export const pathSections=path=>path.chapters.flatMap(chapter=>chapter.sections);
+export function submissionHistoryText(entry){
+  if(!entry.history?.length)return '';
+  const safe=value=>String(value || '').replaceAll('`','~');
+  return '\n\nSubmitted revision history (explicit submissions only):\n'+entry.history.map((attempt,index)=>[
+    'Attempt '+(index+1)+' — '+attempt.submissionId+' — '+attempt.submittedAt,
+    'Learning notes:',safe(attempt.notes),'Observed output:',safe(attempt.output),
+    attempt.review?'Mentor review: '+attempt.review.outcome+' — '+attempt.review.reviewedAt+'\n'+safe(attempt.review.feedback):'No review recorded for this attempt.',
+  ].join('\n')).join('\n\n');
+}
+export function renderSubmissionHistory(entry,esc){
+  if(!entry.history?.length)return '';
+  return '<details class="mentor-detail mentor-history"><summary>Submitted attempts ('+entry.history.length+')</summary><p>Submitted answers and their reviews are preserved here. Draft saves are not attempts. Older versions from before history was enabled may be unavailable.</p>'+entry.history.map((attempt,index)=>'<section><h4>Attempt '+(index+1)+'</h4><small>'+esc(attempt.submittedAt)+' · '+esc(attempt.submissionId)+'</small><h5>Learning notes</h5><pre>'+esc(attempt.notes)+'</pre>'+(attempt.output?'<h5>Observed output</h5><pre>'+esc(attempt.output)+'</pre>':'')+(attempt.review?'<p>Mentor review: '+esc(attempt.review.outcome)+' · '+esc(attempt.review.reviewedAt)+'</p><p>'+esc(attempt.review.feedback)+'</p>':'<p>No review recorded for this attempt.</p>')+'</section>').join('')+'</details>';
+}
 export function initialFlow(path,checkpoint){
   // Resume the reading already assigned before gates existed; do not award reviews.
   const resumed=/Reading Cargo\.toml/i.test(checkpoint.currentExercise || '');
@@ -39,6 +52,22 @@ export function validateFlow(value,path){
     if(entry.review){
       if(!['advance','revise'].includes(entry.review.outcome))throw new Error('Invalid review outcome.');
       record.review={outcome:entry.review.outcome,feedback:text(entry.review.feedback,'Mentor feedback',5000),submissionId:text(entry.review.submissionId,'Reviewed submission ID',100),reviewedAt:date(entry.review.reviewedAt,'review time')};
+    }
+    if(entry.history!==undefined){
+      if(!Array.isArray(entry.history)||entry.history.length>500)throw new Error('Invalid submitted revision history.');
+      const seen=new Set();
+      record.history=entry.history.map(attempt=>{
+        if(!attempt||typeof attempt!=='object')throw new Error('Invalid submitted revision.');
+        const saved={submissionId:text(attempt.submissionId,'Submission ID',100),submittedAt:date(attempt.submittedAt,'submission time'),notes:text(attempt.notes,'Learning notes',5000),output:text(attempt.output,'Observed output',12000)};
+        if(!saved.submissionId||seen.has(saved.submissionId))throw new Error('Duplicate submitted revision.');
+        seen.add(saved.submissionId);
+        if(attempt.review){
+          const review=attempt.review;
+          if(!['advance','revise'].includes(review.outcome)||review.submissionId!==saved.submissionId)throw new Error('Revision feedback does not match its submission.');
+          saved.review={outcome:review.outcome,feedback:text(review.feedback,'Mentor feedback',5000),submissionId:saved.submissionId,reviewedAt:date(review.reviewedAt,'review time')};
+        }
+        return saved;
+      });
     }
     if(entry.status==='submitted'&&!record.submissionId)throw new Error('Submitted sections need a submission ID.');
     if(['reviewed','revise'].includes(entry.status)&&(!record.submissionId||record.review?.submissionId!==record.submissionId||record.review.outcome!==(entry.status==='reviewed'?'advance':'revise')))throw new Error('Section status does not match its mentor review.');

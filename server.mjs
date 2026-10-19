@@ -9,9 +9,14 @@ import { ProgressStore, validateProgress, mentorReport } from './lib/progress.mj
 import { beginnerPath, defaultCheckpoint, validateCheckpoint, checkpointReport } from './curriculum/beginner-path.mjs';
 import {flowFor} from './public/mentor-flow.js';
 import {updatePath} from './lib/mentoring.mjs';
+import {createSubmissionNotifier} from './lib/mentor-event-notifier.mjs';
+import {revisits,revisitMap,publicRevisit} from './curriculum/revisits.mjs';
+import {revisitSchedule,requireRevisit,revisitEntry,startRevisit,finishRevisit,revisitHelp} from './lib/revisits.mjs';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const port=Number(process.env.PORT || 4173);
 const store=new ProgressStore(process.env.FOUNDRY_DATA_DIR || path.join(root,'.data'),new Set(lessonMap.keys()));
+const notifySubmission=createSubmissionNotifier(store.directory);
+const mentorReviewClients=new Set();
 const token=randomBytes(32).toString('hex');
 // The learner page cannot approve its own submission. The local mentor helper
 // reads this private key; it is never sent in bootstrap, reports, or exports.
@@ -20,7 +25,7 @@ const mentorKeyFile=path.join(store.directory,'mentor-review.key');
 try{await writeFile(mentorKeyFile,randomBytes(32).toString('hex'),{flag:'wx',mode:0o600});}catch(error){if(error.code!=='EEXIST')throw error;}
 const mentorToken=(await readFile(mentorKeyFile,'utf8')).trim();
 let busy=0; let cachedStatus;
-const staticFiles = {'/':['index.html','text/html; charset=utf-8'],'/app.js':['app.js','text/javascript; charset=utf-8'],'/mentor-path.js':['mentor-path.js','text/javascript; charset=utf-8'],'/mentor-flow.js':['mentor-flow.js','text/javascript; charset=utf-8'],'/style.css':['style.css','text/css; charset=utf-8'],'/editor-theme.css':['editor-theme.css','text/css; charset=utf-8'],'/favicon.svg':['favicon.svg','image/svg+xml']};
+const staticFiles = {'/revisit':['revisit.html','text/html; charset=utf-8'],'/revisit.js':['revisit.js','text/javascript; charset=utf-8'],'/revisit.css':['revisit.css','text/css; charset=utf-8'],'/':['index.html','text/html; charset=utf-8'],'/app.js':['app.js','text/javascript; charset=utf-8'],'/mentor-path.js':['mentor-path.js','text/javascript; charset=utf-8'],'/mentor-flow.js':['mentor-flow.js','text/javascript; charset=utf-8'],'/mentor-live.js':['mentor-live.js','text/javascript; charset=utf-8'],'/style.css':['style.css','text/css; charset=utf-8'],'/editor-theme.css':['editor-theme.css','text/css; charset=utf-8'],'/favicon.svg':['favicon.svg','image/svg+xml']};
 function json(res,status,data) {res.writeHead(status,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(data));}
 async function body(req) {
   const parts=[];let size=0;
@@ -54,6 +59,18 @@ const server=http.createServer(async(req,res)=>{
       const [file,type]=staticFiles[url.pathname];const content=await readFile(path.join(root,'public',file));res.writeHead(200,{'Content-Type':type,'Cache-Control':'no-cache'});return res.end(content);
     }
     if(req.method==='GET' && url.pathname==='/api/bootstrap')return json(res,200,{token,curriculum:publicCurriculum(),progress:await store.read()});
+    if(req.method==='GET' && url.pathname==='/api/revisit'){
+      const progress=await store.read();
+      return json(res,200,{variants:revisits.map(item=>({...publicRevisit(item),...revisitSchedule(item,progress),state:progress.revisits[item.id] || {attempts:[]}}))});
+    }
+    if(req.method==='GET' && url.pathname==='/api/path/events'){
+      if(req.headers.origin && ![`http://127.0.0.1:${port}`,`http://localhost:${port}`].includes(req.headers.origin))return json(res,403,{error:'Cross-origin requests are not accepted.'});
+      res.writeHead(200,{'Content-Type':'text/event-stream','Cache-Control':'no-store','Connection':'keep-alive'});
+      res.write('retry: 1500\nevent: ready\ndata: {}\n\n');
+      mentorReviewClients.add(res);
+      res.on('close',()=>mentorReviewClients.delete(res));
+      return;
+    }
     if(req.method==='GET' && url.pathname==='/api/status')return json(res,200,cachedStatus ||= await toolchainStatus());
     if(req.method==='GET' && url.pathname==='/api/beginner/brief'){
       const brief=await readFile(path.join(root,'docs','BEGINNER.md'),'utf8');
@@ -89,7 +106,39 @@ const server=http.createServer(async(req,res)=>{
     if(['/api/path/draft','/api/path/submit','/api/path/revise','/api/path/review'].includes(url.pathname)){
       const action=url.pathname.split('/').at(-1);
       const progress=await store.update(data=>updatePath(data,input,action));
+      if(action==='review'){
+        // Publish only after persistence, with identifiers rather than notes or credentials.
+        const event={pathId:input.pathId,sectionId:input.sectionId,submissionId:input.submissionId,outcome:input.outcome};
+        for(const client of mentorReviewClients)client.write(`event: review\ndata: ${JSON.stringify(event)}\n\n`);
+      }
+      if(action==='submit'){
+        const entry=progress.mentoring.beginner.flow.sections[input.sectionId];
+        const notification=await notifySubmission({sectionId:input.sectionId,submissionId:entry.submissionId});
+        return json(res,200,{progress,notification});
+      }
       return json(res,200,{progress});
+    }
+    if(['/api/revisit/draft','/api/revisit/check','/api/revisit/help'].includes(url.pathname)){
+      const variant=revisitMap.get(input.id);if(!variant)return json(res,400,{error:'Unknown revisit.'});
+      if(url.pathname.endsWith('/draft')){
+        if(typeof input.code!=='string'||input.code.length>200000||typeof input.prediction!=='string'||input.prediction.length>5000)throw new Error('Invalid revisit draft.');
+        await store.update(data=>{requireRevisit(variant,data);revisitEntry(data,input.id).draft={code:input.code,prediction:input.prediction};});
+        return json(res,200,{saved:true});
+      }
+      if(url.pathname.endsWith('/help')){
+        let help;const progress=await store.update(data=>{help=revisitHelp(variant,data);});
+        return json(res,200,{...help,state:progress.revisits[input.id]});
+      }
+      if(busy>=2)return json(res,429,{error:'Two exercises are already running. Wait for one to finish.'});
+      busy++;
+      try{
+        let attemptId;await store.update(data=>{attemptId=startRevisit(variant,data,input);});
+        let result;
+        try{result=await runLesson(variant,{[variant.entryFile]:input.code},'check');}
+        catch(error){result={ok:false,output:error.message};}
+        const progress=await store.update(data=>finishRevisit(data,input.id,attemptId,result));
+        return json(res,200,{ok:result.ok,output:result.output,state:progress.revisits[input.id]});
+      }finally{busy--;}
     }
     const lesson=lessonMap.get(input.id);if(!lesson)return json(res,400,{error:'Unknown lesson.'});
     if(url.pathname==='/api/save'){
@@ -117,7 +166,7 @@ const server=http.createServer(async(req,res)=>{
         if(input.mode!=='format')await store.update(data=>{record(data,lesson.id).files=input.files;visit(data,lesson);});
         const result=await runLesson(lesson,input.files,input.mode);
         if(input.mode==='format')return json(res,200,result);
-        const progress=await store.update(data=>{const entry=record(data,lesson.id);entry.attempts.push({at:new Date().toISOString(),ok:result.ok,mode:input.mode,output:result.output.slice(-10000)});entry.attempts=entry.attempts.slice(-100);if(result.ok && input.mode==='check')entry.completedAt=new Date().toISOString();});
+        const progress=await store.update(data=>{const entry=record(data,lesson.id);entry.attempts.push({at:new Date().toISOString(),ok:result.ok,mode:input.mode,output:result.output.slice(-10000)});entry.attempts=entry.attempts.slice(-100);if(result.ok && input.mode==='check'){entry.firstCompletedAt ||= entry.completedAt || new Date().toISOString();entry.completedAt=new Date().toISOString();}});
         return json(res,200,{...result,progress});
       }finally{busy--;}
     }

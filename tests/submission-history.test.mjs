@@ -1,0 +1,51 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {updatePath} from '../lib/mentoring.mjs';
+import {defaultCheckpoint,validateCheckpoint,checkpointReport} from '../curriculum/beginner-path.mjs';
+import {renderSubmissionHistory} from '../public/mentor-flow.js';
+const input={pathId:'beginner',sectionId:'location',notes:'First explanation <script>.',output:'First actual output.'};
+const esc=s=>String(s).replaceAll('<','&lt;').replaceAll('>','&gt;');
+test('submission → revise review → edited draft → resubmission preserves both answers and matched feedback',()=>{
+  const data={};updatePath(data,input,'draft');updatePath(data,input,'submit');
+  const entry=data.mentoring.beginner.flow.sections.location,first=entry.submissionId;
+  updatePath(data,{...input,submissionId:first,outcome:'revise',feedback:'Explain what the path names.'},'review');
+  updatePath(data,{...input,notes:'Corrected explanation.',output:'Second output.'},'draft');
+  assert.equal(entry.history.length,1);assert.equal(entry.history[0].notes,input.notes);
+  updatePath(data,input,'submit');const second=entry.submissionId;
+  assert.notEqual(second,first);assert.equal(entry.history.length,2);
+  assert.throws(()=>updatePath(data,{...input,submissionId:first,outcome:'advance',feedback:'Stale review.'},'review'),/changed/);
+  updatePath(data,{...input,submissionId:second,outcome:'advance',feedback:'The correction explains it.'},'review');
+  assert.equal(entry.history[0].review.outcome,'revise');assert.equal(entry.history[0].review.submissionId,first);
+  assert.equal(entry.history[1].review.outcome,'advance');assert.equal(entry.history[1].review.submissionId,second);
+  assert.equal(entry.history[1].notes,'Corrected explanation.');
+  const restored=validateCheckpoint(data.mentoring.beginner);assert.deepEqual(restored.flow.sections.location.history,entry.history);
+  const report=checkpointReport(restored);assert.match(report,/First actual output/);assert.match(report,/Corrected explanation/);assert.match(report,/Explain what the path names/);
+  const html=renderSubmissionHistory(entry,esc);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
+});
+test('reopening a legacy submitted answer snapshots it before edits; drafts never invent old attempts',()=>{
+  const data={mentoring:{beginner:defaultCheckpoint()}};updatePath(data,input,'draft');updatePath(data,input,'submit');
+  const entry=data.mentoring.beginner.flow.sections.location,first=entry.submissionId;delete entry.history;
+  updatePath(data,input,'revise');updatePath(data,{...input,notes:'New draft.'},'draft');
+  assert.equal(entry.history[0].notes,input.notes);assert.equal(entry.history[0].submissionId,first);
+  assert.equal(entry.history.length,1);
+  const legacy={...entry,history:undefined};data.mentoring.beginner.flow.sections.location=legacy;
+  updatePath(data,{...input,notes:'Already edited legacy draft.'},'draft');updatePath(data,input,'submit');
+  assert.equal(legacy.history.length,1);assert.notEqual(legacy.history[0].submissionId,first);
+});
+test('restores reject duplicate IDs and reviews attached to a different submitted revision',()=>{
+  const data={};updatePath(data,input,'draft');updatePath(data,input,'submit');const checkpoint=data.mentoring.beginner;
+  const entry=checkpoint.flow.sections.location;entry.history.push(structuredClone(entry.history[0]));
+  assert.throws(()=>validateCheckpoint(checkpoint),/Duplicate/);entry.history.pop();
+  entry.history[0].review={outcome:'advance',submissionId:'different',feedback:'Wrong attempt.',reviewedAt:new Date().toISOString()};
+  assert.throws(()=>validateCheckpoint(checkpoint),/does not match/);
+});
+test('resubmitting an unchanged legacy revise response preserves its earlier feedback',()=>{
+  const data={};updatePath(data,input,'draft');updatePath(data,input,'submit');
+  const entry=data.mentoring.beginner.flow.sections.location,first=entry.submissionId;
+  updatePath(data,{...input,submissionId:first,outcome:'revise',feedback:'Explain the output.'},'review');
+  delete entry.history;
+  updatePath(data,input,'submit');
+  assert.equal(entry.history.length,2);assert.equal(entry.history[0].submissionId,first);
+  assert.equal(entry.history[0].review.feedback,'Explain the output.');
+  assert.notEqual(entry.history[1].submissionId,first);
+});

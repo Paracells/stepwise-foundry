@@ -1,3 +1,6 @@
+import {submissionHistoryText} from '../public/mentor-flow.js';
+import {functionsChapter} from './beginner-functions.mjs';
+import {parametersChapter} from './beginner-parameters.mjs';
 import {valuesChapter} from './beginner-values.mjs';
 import {validateFlow,flowFor,currentSection,pathSections} from '../public/mentor-flow.js';
 export const checkpointFields=['currentExercise','observedOutput','readingsAssigned','readingsRead','learnerExplanation','mentorReview','blockers','decisionNotes','nextAction'];
@@ -322,7 +325,7 @@ export const beginnerPath={
   ]
 };
 // Keep chapter data shared by the page and its executable examples.
-beginnerPath.chapters.push(valuesChapter);
+beginnerPath.chapters.push(valuesChapter,functionsChapter,parametersChapter);
 
 export const defaultCheckpoint=()=>({...beginnerPath.initialCheckpoint});
 export function validateCheckpoint(value){
@@ -345,7 +348,7 @@ export function checkpointReport(checkpoint=defaultCheckpoint()){
   const flow=flowFor(beginnerPath,state),section=currentSection(beginnerPath,flow);
   const sectionRecords=pathSections(beginnerPath).filter(item=>flow.sections[item.id]).map(item=>{
     const entry=flow.sections[item.id];
-    return `### ${item.title}\nStatus: ${entry.status}\nSubmission: ${entry.submissionId || 'draft'}\nPrompt: ${item.prompt}\n\nLearning notes:\n${text(entry.notes)}\n\nObserved output:\n\x60\x60\x60text\n${text(entry.output)}\n\x60\x60\x60\n\nMentor feedback: ${entry.review?text(entry.review.feedback)+' ('+entry.review.outcome+', '+entry.review.reviewedAt+')':'Pending; no review recorded.'}`;
+    return `### ${item.title}\nStatus: ${entry.status}\nSubmission: ${entry.submissionId || 'draft'}\nPrompt: ${item.prompt}\n\nLearning notes:\n${text(entry.notes)}\n\nObserved output:\n\x60\x60\x60text\n${text(entry.output)}\n\x60\x60\x60\n\nMentor feedback: ${entry.review?text(entry.review.feedback)+' ('+entry.review.outcome+', '+entry.review.reviewedAt+')':'Pending; no review recorded.'}`+submissionHistoryText(entry);
   });
   return [
     '# Rust practice — short mentoring handoff','',

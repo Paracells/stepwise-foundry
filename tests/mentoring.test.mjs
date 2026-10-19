@@ -50,7 +50,7 @@ test('checkpoint page escapes records and does not render later commands or resp
   const locked=renderMentorPath({shell:()=>'',path:beginnerPath,checkpoint:resumed,esc,selectedId:'initialize',requestedId:'initialize'});
   assert.match(locked,/That section is locked/);assert.match(locked,/data-path-section="cargo-manifest"/);
   assert.doesNotMatch(locked,/cargo init --bin/);
-  assert.equal(pathSections(beginnerPath).length,16);
+  assert.equal(pathSections(beginnerPath).length,30);
 });
 
 test('checkpoint API preserves course progress through save, backup, import, and short handoff',async()=>{
