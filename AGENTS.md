@@ -2,6 +2,22 @@
 
 Stepwise Foundry is a local, MIT-licensed programming learning environment for Rust, Python, PyTorch, Hugging Face, and introductory coding-agent practice. Read `README.md` and `CONTRIBUTING.md` for setup and contribution conventions. Keep this checkout generic and ready for a new learner.
 
+## Start here: using Foundry with a learner
+
+Read [the mentoring playbook](docs/MENTORING.md) before beginning or taking over a teaching session. It explains how to identify the learning mode, read current evidence, teach one step, review an exact submission, and hand off. Use the relevant guides below; do not read every document or restart setup on every turn.
+
+| Current task | Instructions to follow |
+| --- | --- |
+| Teach or resume the guided Rust path | [BEGINNER.md](docs/BEGINNER.md), the learner's short handoff, then `node scripts/review-beginner.mjs` |
+| Discuss an open code exercise or manual lab | [MENTORING.md](docs/MENTORING.md), the exact lesson and saved evidence, and [CURRICULUM.md](docs/CURRICULUM.md) for topic/source context |
+| Teach Codex or Claude Code labs | [TOOL-LESSONS.md](docs/TOOL-LESSONS.md) and the current-documentation policy below |
+| Review delayed practice | [REVISITS.md](docs/REVISITS.md); preserve first-attempt and assistance evidence |
+| Set up or troubleshoot requested Submit delivery | [CODEX-DESKTOP.md](docs/CODEX-DESKTOP.md); delivery does not grade or approve work |
+| Change the app or curriculum | [CONTRIBUTING.md](CONTRIBUTING.md), [CURRICULUM.md](docs/CURRICULUM.md), and [SECURITY.md](SECURITY.md) when execution/access is affected |
+| Install or diagnose the local environment | [README.md](README.md) and the relevant official runtime documentation |
+
+Follow applicable nested `AGENTS.md` or task-specific guides if added later. Keep ongoing learner state in their saved record and private handoff, not this generic file. A teaching request does not authorize implementing the learner's project or changing Foundry.
+
 ## Application and curriculum changes
 
 - Keep UI in `public/`, curriculum in `curriculum/`, execution in `lib/runner.mjs`, and persistence in `lib/progress.mjs`. Use the existing helpers and ES module conventions.

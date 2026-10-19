@@ -46,6 +46,8 @@ Mentor review is a local workflow, with messaging disabled by default. Bring the
 
 Local checks assess executable code. Written predictions and explanations are saved for comparison or mentor review; they are not automatically graded for understanding.
 
+Human and assistant mentors should start with [AGENTS.md](AGENTS.md) and [the mentoring playbook](docs/MENTORING.md). They explain which guide applies, how to find current learner evidence, and when to discuss work versus record an exact-submission review.
+
 ## Learn to work with coding agents
 
 Choose **Codex** or **Claude Code** for two introductory chapters each, with six small self-reported labs per tool. Use a separate scratch project to inspect a file, understand permissions, write three project instructions, and review one tiny change. Readings have exact official links and stopping points. The page shows when documentation was checked and explicitly says that the initial external-client workflows were not run by the author; verify your installed client before trying them.
