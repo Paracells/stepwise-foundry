@@ -2,6 +2,15 @@
 
 User-visible changes to Stepwise Foundry, newest first.
 
+## 2026-10-20
+
+### Added
+
+- GitHub Actions CI for the core suite and a startup smoke test that starts the local server and loads its bootstrap API.
+- A scheduled GitLab-to-GitHub sync workflow that tests merged upstream changes before pushing and opens an issue when a conflict or test failure needs manual work.
+- A dev container for Node 22 and Rust, dependency installation, editor build, and private port forwarding for GitHub Codespaces.
+- GitHub setup and sync documentation, including remote layout, optional `SYNC_TOKEN`, conflict recovery, and the local-execution boundary.
+
 ## 2026-10-19
 
 ### Added

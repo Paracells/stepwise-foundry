@@ -1,0 +1,25 @@
+{
+  "name": "Stepwise Foundry",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/rust:1": {
+      "profile": "minimal"
+    }
+  },
+  "postCreateCommand": "npm ci && npm run build:editor",
+  "postAttachCommand": "echo 'Run npm start, then open the forwarded port 4173. Keep the port private: this app executes local code.'",
+  "forwardPorts": [4173],
+  "portsAttributes": {
+    "4173": {
+      "label": "Stepwise Foundry (private)",
+      "onAutoForward": "notify",
+      "visibility": "private"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["rust-lang.rust-analyzer"]
+    }
+  },
+  "remoteUser": "node"
+}

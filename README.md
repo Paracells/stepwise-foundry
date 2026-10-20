@@ -36,6 +36,10 @@ Use **Dark mode** in the top bar to switch the page theme. Your choice is saved 
 
 The full app was tested on Windows, and the core tests also pass in Linux CI. macOS installation feedback is welcome. The optional guided Rust beginner path currently teaches PowerShell commands. The main 420-lesson curriculum is separate and freely navigable.
 
+### Work from GitHub
+
+A GitHub copy can keep the original GitLab repository as upstream. The included Actions workflows run core tests and the startup smoke test, and a scheduled workflow merges upstream changes, tests the result, and pushes only when tests pass. See [docs/GITHUB.md](docs/GITHUB.md) for the remote layout, optional sync token, conflict handling, and Codespaces notes. GitHub Actions is CI, not a hosted instance of the app; the workbench still runs locally.
+
 ## Choose your track and learn by doing
 
 The **Rust, Python, PyTorch, and Hugging Face** tracks use the same practice loop: read a short explanation and the linked official documentation, predict the result, edit the commented starter, run or check it, and explain what you observed. Hints, worked solutions, notes, and exportable progress support that process. Checks execute real assertions or expected compiler diagnostics; manual field labs are explicitly self-reported.

@@ -1,0 +1,49 @@
+name: Sync from GitLab
+
+on:
+  schedule:
+    # Daily at 03:17 UTC. Scheduled workflows run on the default branch.
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: gitlab-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Fetch, merge, test, and push
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          # Optional fine-grained PAT. The default token is enough for the
+          # merge itself, but pushes made with it do not start another workflow.
+          token: ${{ secrets.SYNC_TOKEN || github.token }}
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt
+          rustup default stable
+          rustc --version
+          cargo --version
+
+      - name: Sync, test, and push
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPSTREAM_URL: https://gitlab.com/koraji95coder/stepwise-foundry.git
+        run: bash .github/scripts/sync-gitlab.sh
