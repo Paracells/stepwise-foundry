@@ -129,9 +129,8 @@ else
   if ! git merge --no-ff --no-edit "$UPSTREAM_REVISION"; then
     CONFLICT_FILE="$TEMP_DIR/gitlab-sync-conflicts.txt"
     {
-      printf 'Conflicting files:\n\n~~~text\n'
+      printf 'Conflicting files:\n\n'
       git diff --name-only --diff-filter=U || true
-      printf '\n~~~\n'
     } > "$CONFLICT_FILE"
     git merge --abort 2>/dev/null || git reset --hard "$BASE_REVISION"
     report_failure "The upstream merge has conflicts." "$CONFLICT_FILE"
