@@ -58,9 +58,9 @@ Branch protection must allow the sync workflow to push to `main`. If you require
 1. On GitHub, choose **Code → Codespaces → Create codespace on main**.
 2. Wait for `npm ci` and `npm run build:editor`.
 3. Run `npm start`.
-4. Open the forwarded port 4173. Keep its visibility **Private**.
+4. Try the forwarded port 4173. Keep its visibility **Private**.
 
-The app remains a local, single-user code-execution workbench. It binds to `127.0.0.1` and validates Host and Origin. Do not make the forwarded port public and do not weaken those checks. If the Codespaces proxy rejects the forwarded host, run the app in a local clone instead; GitHub Actions is CI, not a public hosting service.
+The app remains a local, single-user code-execution workbench. It binds to `127.0.0.1` and validates Host and Origin. Codespaces may not be able to reach a loopback-only server through its proxy; in that case, use the dev container for editing and tests and run the workbench from a local clone. Do not make the forwarded port public or weaken the bind and host checks just to expose the app. GitHub Actions is CI, not a public hosting service.
 
 ## Secrets and learner data
 

@@ -7,7 +7,7 @@
     }
   },
   "postCreateCommand": "npm ci && npm run build:editor",
-  "postAttachCommand": "echo 'Run npm start, then open the forwarded port 4173. Keep the port private: this app executes local code.'",
+  "postAttachCommand": "echo 'Run npm start to try the workbench on private port 4173. The app is loopback-only; if the Codespaces proxy cannot reach it, use a local clone.'",
   "forwardPorts": [4173],
   "portsAttributes": {
     "4173": {
